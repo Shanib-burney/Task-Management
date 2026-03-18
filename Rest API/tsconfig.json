@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2023", // latest JS features
+    "module": "ESNext", // ESM modules
+    "moduleResolution": "bundler", // required for modern bundlers
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
