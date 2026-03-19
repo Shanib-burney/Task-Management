@@ -11,6 +11,7 @@ export class ProjectRepository {
   }
 
   async create(data: Omit<Project, "id" | "createdAt" | "updatedAt">): Promise<Project> {
+    
     return prisma.project.create({ data });
   }
 

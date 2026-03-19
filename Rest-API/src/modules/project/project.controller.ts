@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
-import { ProjectService } from "./project.service.js";
+import { ProjectService } from "./project.service";
+import { CreateProjectBody, UpdateProjectBody } from "./project.validators";
+import HTTP_STATUS_CODE from "../shared/utils/http-status-code";
 
 export class ProjectController {
   private projectService: ProjectService;
@@ -27,7 +29,7 @@ export class ProjectController {
     try {
       const project = await this.projectService.getProjectById(id);
       if (!project) {
-        res.status(404).json({ error: "Project not found" });
+        res.status(HTTP_STATUS_CODE.NOT_FOUND).json({ error: "Project not found" });
         return;
       }
       res.json(project);
@@ -37,20 +39,10 @@ export class ProjectController {
     }
   }
 
-  async createProject(req: Request, res: Response): Promise<void> {
-    const { name, status, teamId, ownerId } = req.body;
-    if (!name || status === undefined || teamId === undefined || ownerId === undefined) {
-      res.status(400).json({ error: "name, status, teamId, and ownerId are required" });
-      return;
-    }
-
+  async createProject(req: Request<{}, {}, CreateProjectBody>, res: Response): Promise<void> {
     try {
-      const project = await this.projectService.createProject({
-        name,
-        status: Number(status),
-        teamId: Number(teamId),
-        ownerId: Number(ownerId),
-      });
+      const {name, ownerId, teamId , status} = req.body;
+      const project = await this.projectService.createProject({ name, ownerId, teamId, status : status ?? 0 });
       res.status(201).json(project);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Unknown error";
@@ -64,15 +56,8 @@ export class ProjectController {
       res.status(400).json({ error: "Invalid project ID" });
       return;
     }
-
-    const { name, status, teamId, ownerId } = req.body;
     try {
-      const project = await this.projectService.updateProject(id, {
-        name,
-        status: status !== undefined ? Number(status) : undefined,
-        teamId: teamId !== undefined ? Number(teamId) : undefined,
-        ownerId: ownerId !== undefined ? Number(ownerId) : undefined,
-      });
+      const project = await this.projectService.updateProject(id, req.body);
       res.json(project);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Unknown error";
@@ -90,7 +75,6 @@ export class ProjectController {
       res.status(400).json({ error: "Invalid project ID" });
       return;
     }
-
     try {
       await this.projectService.deleteProject(id);
       res.status(204).send();

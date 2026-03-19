@@ -28,3 +28,36 @@ export class ProjectService {
     return this.projectRepository.delete(id);
   }
 }
+
+
+// async function createProjectWithTasks() {
+//   const newProject = await prisma.project.create({
+//     data: {
+//       name: "GraphQL API Overhaul",
+//       status: 1, // e.g., 1 = "In Progress"
+//       teamId: 1, // Links to an existing Team
+//       ownerId: 1, // Links to an existing User
+      
+//       // Here is the nested write magic:
+//       tasks: {
+//         create: [
+//           { 
+//             title: "Define Prisma schema", 
+//             status: 1,
+//             description: "Update the schema with new relations." 
+//           },
+//           { 
+//             title: "Setup Apollo Server", 
+//             status: 1 
+//           }
+//         ]
+//       }
+//     },
+//     // This tells Prisma to fetch and return the newly created tasks along with the project
+//     include: {
+//       tasks: true 
+//     }
+//   });
+
+//   console.log("Created Project with Tasks:", newProject);
+// }

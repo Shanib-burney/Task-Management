@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { UserService } from "./user.service";
+import { CreateUserBody } from "./user.validators";
+import HTTP_STATUS_CODE from "../shared/utils/http-status-code";
 
 export class UserController {
   private userService: UserService;
@@ -37,30 +39,25 @@ export class UserController {
     }
   }
 
-  async createUser(req: Request, res: Response): Promise<void> {
-    const { name, email, role, status, passwordHash } = req.body;
-    if (!name || !email || role === undefined || status === undefined || !passwordHash) {
-      res
-        .status(400)
-        .json({ error: "name, email, role, status, and passwordHash are required" });
-      return;
-    }
+  async createUser(req: Request<{}, {}, CreateUserBody>, res: Response): Promise<void> {
+    const { name, email, role, status, password } = req.body;
     try {
-      const user = await this.userService.createUser({
+      await this.userService.createUser({
         name,
         email,
         role: Number(role),
-        status: Number(status),
-        passwordHash,
+        status,
+        password,
       });
-      res.status(201).json(user);
+      res.status(201).json({ message: "User created successfully" });
+
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Unknown error";
       if (message.includes("Unique constraint failed")) {
-        res.status(409).json({ error: "Email already exists" });
+        res.status(HTTP_STATUS_CODE.CONFLICT).json({ error: "Email already exists" });
         return;
       }
-      res.status(500).json({ error: message });
+      res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: message });
     }
   }
 
@@ -70,14 +67,14 @@ export class UserController {
       res.status(400).json({ error: "Invalid user ID" });
       return;
     }
-    const { name, email, role, status, passwordHash } = req.body;
+    const { name, email, role, status, password } = req.body;
     try {
       const user = await this.userService.updateUser(id, {
         name,
         email,
         role: role !== undefined ? Number(role) : undefined,
         status: status !== undefined ? Number(status) : undefined,
-        passwordHash,
+        passwordHash: password,
       });
       res.json(user);
     } catch (error: unknown) {

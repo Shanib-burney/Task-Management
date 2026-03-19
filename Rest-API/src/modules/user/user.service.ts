@@ -1,5 +1,6 @@
 import { UserRepository } from "./user.repository";
 import { User } from "../../generated/prisma/client";
+import { CreateUserBody } from "./user.validators";
 
 export class UserService {
   private userRepository: UserRepository;
@@ -17,9 +18,16 @@ export class UserService {
     return this.userRepository.findUnique(id);
   }
 
-  async createUser(data: Omit<User, "id" | "createdAt" | "updatedAt">): Promise<User> {
+  async createUser(data: CreateUserBody): Promise<User> {
     // Add any business logic/validation here before calling the repository
-    return this.userRepository.create(data);
+
+    const userData  = {
+      ...data,
+      status: data.status ? data.status : 1,
+      passwordHash: data.password, // In a real app, hash the password before storing
+    };
+    return this.userRepository.create(userData);
+
   }
 
   async updateUser(id: number, data: Partial<Omit<User, "id">>): Promise<User> {

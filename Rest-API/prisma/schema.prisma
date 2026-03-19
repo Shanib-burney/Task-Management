@@ -31,7 +31,6 @@ model User {
 model Team {
   id        Int        @id @default(autoincrement())
   name      String
-  status    Int        @db.SmallInt
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
@@ -46,7 +45,7 @@ model UserTeam {
   id        Int      @id @default(autoincrement())
   userId    Int
   teamId    Int
-  role      Int      @db.SmallInt
+  role      Int      @default(0) @db.SmallInt
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -62,7 +61,7 @@ model UserTeam {
 model Project {
   id        Int      @id @default(autoincrement())
   name      String
-  status    Int      @db.SmallInt
+  status    Int      @default(0) @db.SmallInt
   teamId    Int
   ownerId   Int
   createdAt DateTime @default(now())
@@ -80,7 +79,7 @@ model Task {
   id          Int      @id @default(autoincrement())
   title       String
   description String?
-  status      Int      @db.SmallInt
+  status      Int      @default(0) @db.SmallInt
   projectId   Int
   assigneeId  Int?     // Optional: Task might be unassigned initially
   createdAt   DateTime @default(now())
