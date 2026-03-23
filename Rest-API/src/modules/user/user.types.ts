@@ -1,13 +1,7 @@
-export  enum UserRoles {
-    ADMIN = 0,
-    USER = 1,
-}
-export  enum UserStatus {
-    PENDING = 0,
-    ACTIVE = 1,
-}
+import { User } from "../../generated/prisma/client";
 
-export  enum UserTeamRoles {
-    ADMIN = 0,
-    USER = 1
-}
+export type CreateUserDTO = Omit<User, "id" | "createdAt" | "updatedAt" | "passwordHash"> & {
+  password: string;
+};
+
+export type UpdateUserDTO = Partial<CreateUserDTO>;

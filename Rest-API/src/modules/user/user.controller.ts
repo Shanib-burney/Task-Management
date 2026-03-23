@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { UserService } from "./user.service";
-import { CreateUserBody } from "./user.validators";
+import { CreateUserBody, UpdateUserBody } from "./user.validators";
 import HTTP_STATUS_CODE from "../shared/utils/http-status-code";
+import { UserRoles, UserStatus } from "./user.enum";
 
 export class UserController {
   private userService: UserService;
@@ -39,34 +40,26 @@ export class UserController {
     }
   }
 
-  async createUser(req: Request<{}, {}, CreateUserBody>, res: Response): Promise<void> {
-    const { name, email, role, status, password } = req.body;
+  async createUser(req: Request<{}, {}, CreateUserBody>, res: Response, next: Function): Promise<void> {
     try {
-      await this.userService.createUser({
-        name,
-        email,
-        role: Number(role),
-        status,
-        password,
+      await this.userService.createUser({ 
+        name: req.body.name, 
+        email: req.body.email, 
+        password: req.body.password, 
+        role: req.body.role ? Number(req.body.role) : UserRoles.USER, 
+        status: req.body.status ?? UserStatus.ACTIVE 
       });
       res.status(201).json({ message: "User created successfully" });
 
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      if (message.includes("Unique constraint failed")) {
-        res.status(HTTP_STATUS_CODE.CONFLICT).json({ error: "Email already exists" });
-        return;
-      }
-      res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: message });
+    } catch (error) {
+      next(error);
     }
+
   }
 
-  async updateUser(req: Request, res: Response): Promise<void> {
+  async updateUser(req: Request<{ id: number }, {}, UpdateUserBody>, res: Response): Promise<void> {
     const id = Number(req.params.id);
-    if (Number.isNaN(id)) {
-      res.status(400).json({ error: "Invalid user ID" });
-      return;
-    }
+
     const { name, email, role, status, password } = req.body;
     try {
       const user = await this.userService.updateUser(id, {

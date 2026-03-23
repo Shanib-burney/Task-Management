@@ -9,3 +9,17 @@
 // }
 
 // export {};
+
+// This empty export is necessary to make this a module
+
+
+declare global {
+  namespace Express {
+    export interface Request {
+      requestId: string;
+      // You can add other things here later, like:
+      // user?: { id: string; role: string };
+    }
+  }
+}
+export {}; 

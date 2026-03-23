@@ -308,7 +308,7 @@ export type ProjectScalarWhereWithAggregatesInput = {
 
 export type ProjectCreateInput = {
   name: string
-  status: number
+  status?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   team: Prisma.TeamCreateNestedOneWithoutProjectsInput
@@ -319,7 +319,7 @@ export type ProjectCreateInput = {
 export type ProjectUncheckedCreateInput = {
   id?: number
   name: string
-  status: number
+  status?: number
   teamId: number
   ownerId: number
   createdAt?: Date | string
@@ -351,7 +351,7 @@ export type ProjectUncheckedUpdateInput = {
 export type ProjectCreateManyInput = {
   id?: number
   name: string
-  status: number
+  status?: number
   teamId: number
   ownerId: number
   createdAt?: Date | string
@@ -534,7 +534,7 @@ export type ProjectUpdateOneRequiredWithoutTasksNestedInput = {
 
 export type ProjectCreateWithoutOwnerInput = {
   name: string
-  status: number
+  status?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   team: Prisma.TeamCreateNestedOneWithoutProjectsInput
@@ -544,7 +544,7 @@ export type ProjectCreateWithoutOwnerInput = {
 export type ProjectUncheckedCreateWithoutOwnerInput = {
   id?: number
   name: string
-  status: number
+  status?: number
   teamId: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -592,7 +592,7 @@ export type ProjectScalarWhereInput = {
 
 export type ProjectCreateWithoutTeamInput = {
   name: string
-  status: number
+  status?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedProjectsInput
@@ -602,7 +602,7 @@ export type ProjectCreateWithoutTeamInput = {
 export type ProjectUncheckedCreateWithoutTeamInput = {
   id?: number
   name: string
-  status: number
+  status?: number
   ownerId: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -637,7 +637,7 @@ export type ProjectUpdateManyWithWhereWithoutTeamInput = {
 
 export type ProjectCreateWithoutTasksInput = {
   name: string
-  status: number
+  status?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   team: Prisma.TeamCreateNestedOneWithoutProjectsInput
@@ -647,7 +647,7 @@ export type ProjectCreateWithoutTasksInput = {
 export type ProjectUncheckedCreateWithoutTasksInput = {
   id?: number
   name: string
-  status: number
+  status?: number
   teamId: number
   ownerId: number
   createdAt?: Date | string
@@ -692,7 +692,7 @@ export type ProjectUncheckedUpdateWithoutTasksInput = {
 export type ProjectCreateManyOwnerInput = {
   id?: number
   name: string
-  status: number
+  status?: number
   teamId: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -729,7 +729,7 @@ export type ProjectUncheckedUpdateManyWithoutOwnerInput = {
 export type ProjectCreateManyTeamInput = {
   id?: number
   name: string
-  status: number
+  status?: number
   ownerId: number
   createdAt?: Date | string
   updatedAt?: Date | string

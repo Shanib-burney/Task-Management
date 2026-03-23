@@ -293,7 +293,7 @@ export type UserTeamScalarWhereWithAggregatesInput = {
 }
 
 export type UserTeamCreateInput = {
-  role: number
+  role?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTeamsInput
@@ -304,7 +304,7 @@ export type UserTeamUncheckedCreateInput = {
   id?: number
   userId: number
   teamId: number
-  role: number
+  role?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -330,7 +330,7 @@ export type UserTeamCreateManyInput = {
   id?: number
   userId: number
   teamId: number
-  role: number
+  role?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -491,7 +491,7 @@ export type UserTeamUncheckedUpdateManyWithoutTeamNestedInput = {
 }
 
 export type UserTeamCreateWithoutUserInput = {
-  role: number
+  role?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   team: Prisma.TeamCreateNestedOneWithoutMembersInput
@@ -500,7 +500,7 @@ export type UserTeamCreateWithoutUserInput = {
 export type UserTeamUncheckedCreateWithoutUserInput = {
   id?: number
   teamId: number
-  role: number
+  role?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -544,7 +544,7 @@ export type UserTeamScalarWhereInput = {
 }
 
 export type UserTeamCreateWithoutTeamInput = {
-  role: number
+  role?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTeamsInput
@@ -553,7 +553,7 @@ export type UserTeamCreateWithoutTeamInput = {
 export type UserTeamUncheckedCreateWithoutTeamInput = {
   id?: number
   userId: number
-  role: number
+  role?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -587,7 +587,7 @@ export type UserTeamUpdateManyWithWhereWithoutTeamInput = {
 export type UserTeamCreateManyUserInput = {
   id?: number
   teamId: number
-  role: number
+  role?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -618,7 +618,7 @@ export type UserTeamUncheckedUpdateManyWithoutUserInput = {
 export type UserTeamCreateManyTeamInput = {
   id?: number
   userId: number
-  role: number
+  role?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }

@@ -1,6 +1,8 @@
 import { UserRepository } from "./user.repository";
 import { User } from "../../generated/prisma/client";
 import { CreateUserBody } from "./user.validators";
+import bcrypt from "bcryptjs";
+import { UserRoles, UserStatus } from "./user.enum";
 
 export class UserService {
   private userRepository: UserRepository;
@@ -19,12 +21,16 @@ export class UserService {
   }
 
   async createUser(data: CreateUserBody): Promise<User> {
-    // Add any business logic/validation here before calling the repository
-
+    
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    
+    const { password, ...remainingData } = data;
+    
     const userData  = {
-      ...data,
-      status: data.status ? data.status : 1,
-      passwordHash: data.password, // In a real app, hash the password before storing
+      ...remainingData,
+      role : data.role ? Number(data.role) : UserRoles.USER,
+      status: data.status ?? UserStatus.ACTIVE,
+      passwordHash: hashedPassword
     };
     return this.userRepository.create(userData);
 

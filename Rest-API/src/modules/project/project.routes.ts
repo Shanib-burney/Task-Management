@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { createProjectSchema, updateProjectSchema } from "./project.validators.js";
-import { ProjectController } from "./project.controller.js";
-import { ProjectService } from "./project.service.js";
-import { ProjectRepository } from "./project.repository.js";
-import { validate } from "../shared/middlewares/validation.middleware.js";
-import { idSchema } from "../shared/utils/types.js";
+import { createProjectSchema, updateProjectSchema } from "./project.validators";
+import { ProjectController } from "./project.controller";
+import { ProjectService } from "./project.service";
+import { ProjectRepository } from "./project.repository";
+import { validate } from "../shared/middlewares/validation.middleware";
+import { idSchema } from "../shared/utils/utils";
 
 const router = Router();
 const projectController = new ProjectController(new ProjectService(new ProjectRepository()));

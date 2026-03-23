@@ -318,7 +318,7 @@ export type TaskScalarWhereWithAggregatesInput = {
 export type TaskCreateInput = {
   title: string
   description?: string | null
-  status: number
+  status?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutTasksInput
@@ -329,7 +329,7 @@ export type TaskUncheckedCreateInput = {
   id?: number
   title: string
   description?: string | null
-  status: number
+  status?: number
   projectId: number
   assigneeId?: number | null
   createdAt?: Date | string
@@ -361,7 +361,7 @@ export type TaskCreateManyInput = {
   id?: number
   title: string
   description?: string | null
-  status: number
+  status?: number
   projectId: number
   assigneeId?: number | null
   createdAt?: Date | string
@@ -543,7 +543,7 @@ export type NullableIntFieldUpdateOperationsInput = {
 export type TaskCreateWithoutAssigneeInput = {
   title: string
   description?: string | null
-  status: number
+  status?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutTasksInput
@@ -553,7 +553,7 @@ export type TaskUncheckedCreateWithoutAssigneeInput = {
   id?: number
   title: string
   description?: string | null
-  status: number
+  status?: number
   projectId: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -602,7 +602,7 @@ export type TaskScalarWhereInput = {
 export type TaskCreateWithoutProjectInput = {
   title: string
   description?: string | null
-  status: number
+  status?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   assignee?: Prisma.UserCreateNestedOneWithoutAssignedTasksInput
@@ -612,7 +612,7 @@ export type TaskUncheckedCreateWithoutProjectInput = {
   id?: number
   title: string
   description?: string | null
-  status: number
+  status?: number
   assigneeId?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -648,7 +648,7 @@ export type TaskCreateManyAssigneeInput = {
   id?: number
   title: string
   description?: string | null
-  status: number
+  status?: number
   projectId: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -687,7 +687,7 @@ export type TaskCreateManyProjectInput = {
   id?: number
   title: string
   description?: string | null
-  status: number
+  status?: number
   assigneeId?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string

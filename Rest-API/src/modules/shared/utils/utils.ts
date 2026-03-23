@@ -7,3 +7,5 @@ export const enumSchema = <T extends Record<string, string | number>>(enumObj: T
 
   return z.enum(keys).transform((val) => enumObj[val] as number);
 };
+
+export const idSchema = z.object({ id: z.coerce.number().int().positive() });
