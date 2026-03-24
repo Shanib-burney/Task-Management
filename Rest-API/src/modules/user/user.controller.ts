@@ -57,10 +57,9 @@ export class UserController {
 
   async patchUser(req: Request<{ id: string }, {}, UpdateUserDTO>, res: Response): Promise<void> {
     const id = Number(req.params.id);
-
     try {
-      const user = await this.userService.updateUser(id, req.body);
-      res.json(user);
+      await this.userService.updateUser(id, req.body);
+      res.json({message: "User updated successfully"});
     } catch (error: unknown) {
       throw error
     }

@@ -11,10 +11,10 @@ export class UserRepository extends BaseRepository {
     return prisma.user.findUnique({ where: { id } });
   }
 
-    async findByEmail(email: string, ignoreId?: number): Promise<User | null> {
-      if(ignoreId) {
-        return prisma.user.findUnique({ where: { email, NOT: { id: ignoreId } } });
-      } 
+  async findByEmail(email: string, ignoreId?: number): Promise<User | null> {
+    if (ignoreId) {
+      return prisma.user.findUnique({ where: { email, NOT: { id: ignoreId } } });
+    }
     return prisma.user.findUnique({ where: { email } });
   }
 

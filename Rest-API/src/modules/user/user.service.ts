@@ -32,7 +32,6 @@ export class UserService {
       throw new ConflictException(`User with Email ${data.email} already exists`)
     }
 
-
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
     const { password, ...remainingData } = data;
@@ -49,9 +48,8 @@ export class UserService {
 
   async updateUser(id: number, data: UpdateUserDTO): Promise<User> {
     // Add any business logic/validation here
-
-    const existingUser = await this.userRepository.findById(id)
-    if(existingUser){
+    const existingUser = await this.userRepository.findById(id);
+    if(!existingUser){
       throw new NotFoundException(`User with id ${id} not found`)
     }
     
