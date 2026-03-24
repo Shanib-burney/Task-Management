@@ -47,7 +47,7 @@ process.on("uncaughtException", (err) => {
 
 app.listen(PORT, async () => {
   logger.info(`Server is running on http://localhost:${PORT}`);
-  try {
+   try {
     await prisma.$connect();
     logger.info("Database connected successfully");
   } catch (error) {

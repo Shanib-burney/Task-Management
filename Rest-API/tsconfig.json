@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "target": "ES2023", // latest JS features
-    "module": "ESNext", // ESM modules
-    "moduleResolution": "bundler", // required for modern bundlers
+    "target": "ES2020",
+    "module": "commonjs",
+    "moduleResolution": "node", // ✅ Node-style resolution
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
-    "esModuleInterop": true,
+    "esModuleInterop": true, // ✅ keep this (important)
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },

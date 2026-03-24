@@ -1,13 +1,21 @@
 import { prisma } from "../../db/prisma-client";
 import { User } from "../../generated/prisma/client";
+import { BaseRepository } from "../shared/utils/base-repository";
 
-export class UserRepository {
+export class UserRepository extends BaseRepository {
   async findMany(): Promise<User[]> {
     return prisma.user.findMany();
   }
 
-  async findUnique(id: number): Promise<User | null> {
+  async findById(id: number): Promise<User | null> {
     return prisma.user.findUnique({ where: { id } });
+  }
+
+    async findByEmail(email: string, ignoreId?: number): Promise<User | null> {
+      if(ignoreId) {
+        return prisma.user.findUnique({ where: { email, NOT: { id: ignoreId } } });
+      } 
+    return prisma.user.findUnique({ where: { email } });
   }
 
   async create(data: Omit<User, "id" | "createdAt" | "updatedAt">): Promise<User> {

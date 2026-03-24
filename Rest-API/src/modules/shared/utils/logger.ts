@@ -1,6 +1,6 @@
 import { createLogger, format, transports } from "winston";
 
-const { combine, timestamp, printf, colorize, json } = format;
+const { combine, timestamp, printf, colorize } = format;
 
 // Simple custom format for console (can switch to json)
 const consoleFormat = printf(({ level, message, timestamp, ...meta }) => {
@@ -13,7 +13,7 @@ export const logger = createLogger({
   level: "info",
   format: combine(
     timestamp(),
-    colorize(),
+    colorize({ all: true }),
     consoleFormat // use json() if you want JSON structured logs
   ),
   transports: [

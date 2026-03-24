@@ -44,7 +44,7 @@ export class TeamController {
       return;
     }
     try {
-      const team = await this.teamService.createTeam({ name, status: Number(status) });
+      const team = await this.teamService.createTeam({ name });
       res.status(201).json(team);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Unknown error";
@@ -58,12 +58,10 @@ export class TeamController {
       res.status(400).json({ error: "Invalid team ID" });
       return;
     }
-    const { name, status } = req.body;
+    const { name } = req.body;
     try {
       const team = await this.teamService.updateTeam(id, {
-        name,
-        status: status !== undefined ? Number(status) : undefined,
-      });
+        name      });
       res.json(team);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Unknown error";

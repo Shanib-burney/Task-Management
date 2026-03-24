@@ -18,5 +18,5 @@ export const updateUserSchema = z.object({
   password: z.string().min(6).optional(),
 });
 
-export type CreateUserBody = z.infer<typeof createUserSchema>;
-export type UpdateUserBody = z.infer<typeof updateUserSchema>;
+export type CreateUserDTO = z.infer<typeof createUserSchema>;
+export type UpdateUserDTO = z.infer<typeof updateUserSchema>;
