@@ -29,10 +29,9 @@ export const validate = (schemas: ValidateSchemas): RequestHandler =>
         }
       }
     }
-
     if (schemas.query) {
       try {
-        req.query = await schemas.query.parseAsync(req.query);
+        res.locals.validatedQuery = await schemas.query.parseAsync(req.query);
       } catch (error: unknown) {
         if (error instanceof ZodError) {
           errors.push(

@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { UserService } from "./user.service";
 import { CreateUserDTO, UpdateUserDTO } from "./user.validators";
-import { NotFoundException } from "../shared/utils/exceptions";
+import { BadRequestException, NotFoundException } from "../shared/utils/exceptions";
 import { logger } from "../shared/utils/logger";
 import HTTP_STATUS_CODE from "../shared/utils/http-status-code";
+import { pagingDTO } from "../shared/utils/utils";
 
 export class UserController {
   private userService: UserService;
@@ -12,9 +13,10 @@ export class UserController {
     this.userService = userService;
   }
 
-  async getAllUsers(req: Request, res: Response): Promise<void> {
+  async getAllUsers(req: Request, res: Response<{}, { validatedQuery: pagingDTO }>): Promise<void> {
     try {
-      const users = await this.userService.getAllUsers();
+      
+      const users = await this.userService.getAllUsers(res.locals.validatedQuery);
       res.json(users);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Unknown error";
@@ -27,8 +29,7 @@ export class UserController {
     try {
       const id = Number(req.params.id);
       if (Number.isNaN(id)) {
-        res.status(400).json({ error: "Invalid user ID" });
-        return;
+        throw new BadRequestException("Invalid user ID");
       }
       const user = await this.userService.getUserById(id);
 
@@ -68,19 +69,13 @@ export class UserController {
   async deleteUser(req: Request, res: Response): Promise<void> {
     const id = Number(req.params.id);
     if (Number.isNaN(id)) {
-      res.status(400).json({ error: "Invalid user ID" });
-      return;
+      throw new BadRequestException("Invalid user ID");
     }
     try {
       await this.userService.deleteUser(id);
       res.status(204).send();
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      if (message.includes("Record to delete does not exist")) {
-        res.status(404).json({ error: "User not found" });
-        return;
-      }
-      res.status(500).json({ error: message });
+      throw error;
     }
   }
 }

@@ -5,7 +5,7 @@ import { UserRoles, UserStatus } from "./user.enum";
 export const createUserSchema = z.object({
   name: z.string().min(1),
   email: z.email(),
-  role: enumSchema(UserRoles).optional(),
+  role: enumSchema(UserRoles).optional().default(UserRoles.USER),
   status: enumSchema(UserStatus).optional(),
   password: z.string().min(6),
 });
@@ -17,6 +17,7 @@ export const updateUserSchema = z.object({
   status: z.number().int().optional(),
   password: z.string().min(6).optional(),
 });
+
 
 export type CreateUserDTO = z.infer<typeof createUserSchema>;
 export type UpdateUserDTO = z.infer<typeof updateUserSchema>;

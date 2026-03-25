@@ -1,14 +1,38 @@
 import { prisma } from "../../db/prisma-client";
 import { User } from "../../generated/prisma/client";
+import { UserFindManyArgs } from "../../generated/prisma/models";
 import { BaseRepository } from "../shared/utils/base-repository";
+import { PaginatedResponse } from "../shared/utils/utils";
+import { UserWithoutPassword } from "./user.types";
+import { PaginationOptions } from "./user.types";
 
 export class UserRepository extends BaseRepository {
-  async findMany(): Promise<User[]> {
-    return prisma.user.findMany();
+  async findMany(options?: { take: number; skip: number } ): Promise<PaginatedResponse<UserWithoutPassword>> {
+
+    let userOptions: UserFindManyArgs = {
+      omit: { passwordHash: true }
+    }
+    userOptions = {
+      ...userOptions,
+      take: options?.take,
+      skip: options?.skip
+    }
+
+    const [users, total] = await Promise.all([
+      prisma.user.findMany(userOptions),
+      prisma.user.count()
+    ]);
+
+
+    return {
+      rows: users,
+      total,
+    };
+
   }
 
-  async findById(id: number): Promise<User | null> {
-    return prisma.user.findUnique({ where: { id } });
+  async findById(id: number): Promise<UserWithoutPassword | null> {
+    return prisma.user.findUnique({ where: { id }, omit: { passwordHash: true } });
   }
 
   async findByEmail(email: string, ignoreId?: number): Promise<User | null> {
