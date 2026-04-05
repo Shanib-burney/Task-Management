@@ -33,13 +33,10 @@ export interface PaginatedResponse<T> {
 
 export function getTakeSkip(model?: pagingDTO): { take: number; skip: number } | undefined {
 
-  console.log("before", model?.paging)
-
   if (model?.paging) {
     model.paging = Boolean(model.paging);
   }
 
-  console.log("after", model?.paging)
   if (model && (Boolean(model?.paging) ?? true)) {
     const { page, size } = model
 

@@ -1,12 +1,26 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../generated/prisma/client";
+import { PrismaClient } from "@prisma-client";
+const {
+  DB_HOST,
+  DB_PORT,
+  DB_USERNAME,
+  DB_PASSWORD,
+  DB_NAME,
+  DB_SCHEMA
+} = process.env;
 
-const connectionString = process.env.DATABASE_URL;
-
-if (!connectionString) {
-  throw new Error("DATABASE_URL is not defined in environment variables");
+if (!DB_HOST || !DB_PORT || !DB_USERNAME || !DB_PASSWORD || !DB_NAME || !DB_SCHEMA) {
+  throw new Error(
+    "One or more required DB environment variables are missing: DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_NAME, DB_SCHEMA"
+  );
 }
+
+// Build PostgreSQL connection string dynamically
+const connectionString = `postgresql://${encodeURIComponent(
+  DB_USERNAME
+)}:${encodeURIComponent(DB_PASSWORD)}@${DB_HOST}:${DB_PORT}/${DB_NAME}?schema=${DB_SCHEMA}`;
+
 
 const adapter = new PrismaPg({ connectionString });
 

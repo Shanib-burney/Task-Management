@@ -19,8 +19,7 @@ export class UserController {
       const users = await this.userService.getAllUsers(res.locals.validatedQuery);
       res.json(users);
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      res.status(500).json({ error: message });
+      throw error;
     }
   }
 

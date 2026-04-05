@@ -8,7 +8,13 @@
     "strict": true,
     "esModuleInterop": true, // ✅ keep this (important)
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@prisma-client": [
+        "generated/prisma/client"
+      ]
+    }
   },
   "include": [
     "src/**/*"

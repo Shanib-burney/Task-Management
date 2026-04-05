@@ -1,6 +1,7 @@
 import express from "express";
 import type { Application, Request, Response } from "express";
 import dotenv from "dotenv";
+import 'module-alias/register';
 import { prisma } from "./db/prisma-client";
 import userRoutes from "./modules/user/user.routes";
 import teamRoutes from "./modules/team/team.routes";
@@ -29,8 +30,6 @@ app.use("/teams", teamRoutes);
 app.use("/projects", projectRoutes);
 
 
-
-// Global error handler (won't catch the above!)
 app.use(errorHandler);
 
 
@@ -44,14 +43,24 @@ process.on("uncaughtException", (err) => {
   console.error("Uncaught Exception:", err);
   //  process.exit(1)
 });
+const connectionString = process.env.DATABASE_URL;
+
 
 app.listen(PORT, async () => {
   logger.info(`Server is running on http://localhost:${PORT}`);
-   try {
+
+  try {
+
     await prisma.$connect();
-    logger.info("Database connected successfully");
+    await prisma.$executeRaw`SELECT 1`; // Test query to confirm connection
+    console.log(process.env.DATABASE_URL)
+    logger.info(`Database connected successfully at ${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`);
+
   } catch (error) {
     logger.error("Database connection failed:", error);
+
+    // Optional but recommended in production
+    process.exit(1);
   }
 });
 

@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import { HttpException } from "../utils/exceptions";
 import { logger } from "../utils/logger";
 import HTTP_STATUS_CODE from "../utils/http-status-code";
-import { Prisma } from "../../../generated/prisma/client";
 import { parsePrismaError } from "../utils/prisma-error-handler";
+import { isPrismaError } from "../utils/prisma-error-handler";
 
 export const errorHandler = (
   err: any,
@@ -26,12 +26,22 @@ export const errorHandler = (
     });
   }
 
-  if (err instanceof Prisma.PrismaClientKnownRequestError) {
+  if (isPrismaError(err)) {
     const prismaError = parsePrismaError(err);
 
     if (prismaError) {
+
+      if (prismaError.errorCode == "DB_ENGINE_CRASH") {
+        logger.error("Prisma Rust Panic (CRITICAL)", {
+          requestId
+        });
+
+        // Optional but recommended in production
+        process.exit(1);
+
+      }
       // Log it cleanly based on the parsed data
-      logger.warn(`Handled DB error: ${prismaError.message}`, { requestId, code: err.code });
+      logger.warn(`Handled DB error: ${prismaError.message}`, { requestId, ...prismaError });
 
       return res.status(prismaError.statusCode).json({
         message: prismaError.message,
@@ -63,7 +73,11 @@ export const errorHandler = (
     });
   }
   // Unknown error
-  logger.error(`Unhandled error: ${err.message || err}`, { requestId });
+  logger.error(`Unhandled error: ${err.message || err}`, {
+    requestId
+    , stack: err instanceof Error ? err.stack : undefined,
+    raw: err, // optional (be careful in prod logs)
+  });
 
 
   res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).json({
