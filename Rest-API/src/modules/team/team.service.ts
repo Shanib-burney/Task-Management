@@ -1,5 +1,5 @@
 import { TeamRepository } from "./team.repository";
-import { Team } from "../../generated/prisma/client";
+import { Team } from "@prisma-client";
 import { PaginatedResponse, pagingDTO } from "modules/shared/utils/utils";
 export class TeamService {
   private teamRepository: TeamRepository;

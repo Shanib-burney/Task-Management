@@ -1,10 +1,9 @@
 import { prisma } from "../../db/prisma-client";
-import { User } from "../../generated/prisma/client";
+import { User } from "@prisma-client";
 import { UserFindManyArgs } from "../../generated/prisma/models";
 import { BaseRepository } from "../shared/utils/base-repository";
 import { PaginatedResponse } from "../shared/utils/utils";
 import { UserWithoutPassword } from "./user.types";
-import { PaginationOptions } from "./user.types";
 
 export class UserRepository extends BaseRepository {
   async findMany(options?: { take: number; skip: number } ): Promise<PaginatedResponse<UserWithoutPassword>> {

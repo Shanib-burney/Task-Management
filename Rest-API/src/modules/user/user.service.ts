@@ -1,5 +1,5 @@
 import { UserRepository } from "./user.repository";
-import { User } from "../../generated/prisma/client";
+import { User } from "@prisma-client";
 import { CreateUserDTO, UpdateUserDTO } from "./user.validators";
 import bcrypt from "bcryptjs";
 import { UserRoles, UserStatus } from "./user.enum";

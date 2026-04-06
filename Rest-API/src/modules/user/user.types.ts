@@ -1,4 +1,4 @@
-import { User } from "../../generated/prisma/client";
+import { User } from "@prisma-client";
 
 // export type CreateUserDTO = Omit<User, "id" | "createdAt" | "updatedAt" | "passwordHash"> & {
 //   password: string;

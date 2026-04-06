@@ -1,6 +1,6 @@
 import { PaginatedResponse } from "modules/shared/utils/utils";
 import { prisma } from "../../db/prisma-client";
-import { Team } from "../../generated/prisma/client";
+import { Team } from "@prisma-client";
 import { BaseRepository } from "../shared/utils/base-repository";
 
 export class TeamRepository extends BaseRepository {

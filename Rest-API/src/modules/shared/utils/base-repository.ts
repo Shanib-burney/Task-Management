@@ -1,5 +1,5 @@
 import { prisma } from "../../../db/prisma-client";
-import { PrismaClient, Prisma } from "../../../generated/prisma/client";
+import {  Prisma } from "@prisma-client";
 
 
 export abstract class BaseRepository {

@@ -1,4 +1,4 @@
-import { Project } from "../../generated/prisma/client";
+import { Project } from "@prisma-client";
 import { ProjectRepository } from "./project.repository";
 import { CreateProjectDTO, UpdateProjectDTO } from "./project.validators";
 import { NotFoundException } from "../shared/utils/exceptions";
