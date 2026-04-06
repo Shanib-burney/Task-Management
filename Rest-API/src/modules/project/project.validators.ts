@@ -13,7 +13,7 @@ export const createProjectSchema = z.object({
         status: z.number().optional(),
       }),
     )
-    .optional()
+    .optional(),
 });
 
 export const updateProjectSchema = z.object({
@@ -23,5 +23,5 @@ export const updateProjectSchema = z.object({
   ownerId: z.number().optional(),
 });
 
-export type CreateProjectBody = z.infer<typeof createProjectSchema>;
-export type UpdateProjectBody = z.infer<typeof updateProjectSchema>;
+export type CreateProjectDTO = z.infer<typeof createProjectSchema>;
+export type UpdateProjectDTO = z.infer<typeof updateProjectSchema>;

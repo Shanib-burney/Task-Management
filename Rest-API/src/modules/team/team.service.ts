@@ -1,6 +1,5 @@
 import { TeamRepository } from "./team.repository";
 import { Team } from "../../generated/prisma/client";
-
 export class TeamService {
   private teamRepository: TeamRepository;
 
@@ -13,7 +12,7 @@ export class TeamService {
   }
 
   async getTeamById(id: number): Promise<Team | null> {
-    return this.teamRepository.findUnique(id);
+    return this.teamRepository.findById(id);
   }
 
   async createTeam(data: Omit<Team, "id" | "createdAt" | "updatedAt">): Promise<Team> {

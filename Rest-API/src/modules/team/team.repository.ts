@@ -1,13 +1,13 @@
 import { prisma } from "../../db/prisma-client";
 import { Team } from "../../generated/prisma/client";
+import { BaseRepository } from "../shared/utils/base-repository";
 
-
-export class TeamRepository {
+export class TeamRepository extends BaseRepository {
   async findMany(): Promise<Team[]> {
     return prisma.team.findMany();
   }
 
-  async findUnique(id: number): Promise<Team | null> {
+  async findById(id: number): Promise<Team | null> {
     return prisma.team.findUnique({ where: { id } });
   }
 

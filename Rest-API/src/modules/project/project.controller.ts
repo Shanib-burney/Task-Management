@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import { ProjectService } from "./project.service";
-import { CreateProjectBody, UpdateProjectBody } from "./project.validators";
+import { CreateProjectDTO, UpdateProjectDTO } from "./project.validators";
+import { BadRequestException } from "../shared/utils/exceptions";
 import HTTP_STATUS_CODE from "../shared/utils/http-status-code";
+import { logger } from "../shared/utils/logger";
 
 export class ProjectController {
   private projectService: ProjectService;
@@ -15,76 +17,59 @@ export class ProjectController {
       const projects = await this.projectService.getAllProjects();
       res.json(projects);
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      res.status(500).json({ error: message });
+      throw error;
     }
   }
 
   async getProjectById(req: Request, res: Response): Promise<void> {
-    const id = Number(req.params.id);
-    if (Number.isNaN(id)) {
-      res.status(400).json({ error: "Invalid project ID" });
-      return;
-    }
     try {
-      const project = await this.projectService.getProjectById(id);
-      if (!project) {
-        res.status(HTTP_STATUS_CODE.NOT_FOUND).json({ error: "Project not found" });
-        return;
+      const id = Number(req.params.id);
+      if (Number.isNaN(id)) {
+        throw new BadRequestException("Invalid project ID");
       }
+
+      const project = await this.projectService.getProjectById(id);
       res.json(project);
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      res.status(500).json({ error: message });
+      logger.warn("Failed to fetch project by id", { error, requestId: req.requestId });
+      throw error;
     }
   }
 
-  async createProject(req: Request<{}, {}, CreateProjectBody>, res: Response): Promise<void> {
+  async createProject(req: Request<{}, {}, CreateProjectDTO>, res: Response): Promise<void> {
     try {
-      const {name, ownerId, teamId , status} = req.body;
-      const project = await this.projectService.createProject({ name, ownerId, teamId, status : status ?? 0 });
-      res.status(201).json(project);
+      const project = await this.projectService.createProject(req.body);
+      res.status(HTTP_STATUS_CODE.CREATED).json(project);
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      res.status(500).json({ error: message });
+      throw error;
     }
   }
 
-  async updateProject(req: Request, res: Response): Promise<void> {
-    const id = Number(req.params.id);
-    if (Number.isNaN(id)) {
-      res.status(400).json({ error: "Invalid project ID" });
-      return;
-    }
+  async patchProject(req: Request<{ id: string }, {}, UpdateProjectDTO>, res: Response): Promise<void> {
     try {
+      const id = Number(req.params.id);
+      if (Number.isNaN(id)) {
+        throw new BadRequestException("Invalid project ID");
+      }
+
       const project = await this.projectService.updateProject(id, req.body);
       res.json(project);
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      if (message.includes("Record to update not found")) {
-        res.status(404).json({ error: "Project not found" });
-        return;
-      }
-      res.status(500).json({ error: message });
+      throw error;
     }
   }
 
   async deleteProject(req: Request, res: Response): Promise<void> {
-    const id = Number(req.params.id);
-    if (Number.isNaN(id)) {
-      res.status(400).json({ error: "Invalid project ID" });
-      return;
-    }
     try {
-      await this.projectService.deleteProject(id);
-      res.status(204).send();
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      if (message.includes("Record to delete does not exist")) {
-        res.status(404).json({ error: "Project not found" });
-        return;
+      const id = Number(req.params.id);
+      if (Number.isNaN(id)) {
+        throw new BadRequestException("Invalid project ID");
       }
-      res.status(500).json({ error: message });
+
+      await this.projectService.deleteProject(id);
+      res.status(HTTP_STATUS_CODE.NO_CONTENT).send();
+    } catch (error: unknown) {
+      throw error;
     }
   }
 }

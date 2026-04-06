@@ -4,17 +4,15 @@ import { TeamService } from "./team.service";
 import { TeamRepository } from "./team.repository";
 import { createTeamSchema, updateTeamSchema } from "./team.validators";
 import { validate } from "../shared/middlewares/validation.middleware";
-import { z } from "zod";
+import { idSchema } from "../shared/utils/utils";
 
 const router = Router();
 const teamController = new TeamController(new TeamService(new TeamRepository()));
 
-const teamIdSchema = z.object({ id: z.coerce.number().int().positive() });
-
 router.get("/", teamController.getAllTeams.bind(teamController));
-router.get("/:id", validate({ params: teamIdSchema }), teamController.getTeamById.bind(teamController));
+router.get("/:id", validate({ params: idSchema }), teamController.getTeamById.bind(teamController));
 router.post("/", validate({ body: createTeamSchema }), teamController.createTeam.bind(teamController));
-router.put("/:id", validate({ params: teamIdSchema, body: updateTeamSchema }), teamController.updateTeam.bind(teamController));
-router.delete("/:id", validate({ params: teamIdSchema }), teamController.deleteTeam.bind(teamController));
+router.patch("/:id", validate({ params: idSchema, body: updateTeamSchema }), teamController.patchTeam.bind(teamController));
+router.delete("/:id", validate({ params: idSchema }), teamController.deleteTeam.bind(teamController));
 
 export default router;

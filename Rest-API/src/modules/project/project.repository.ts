@@ -1,17 +1,17 @@
 import { prisma } from "../../db/prisma-client";
 import { Project } from "../../generated/prisma/client";
+import { BaseRepository } from "../shared/utils/base-repository";
 
-export class ProjectRepository {
+export class ProjectRepository extends BaseRepository {
   async findMany(): Promise<Project[]> {
     return prisma.project.findMany({ include: { owner: true, team: true } });
   }
 
-  async findUnique(id: number): Promise<Project | null> {
+  async findById(id: number): Promise<Project | null> {
     return prisma.project.findUnique({ where: { id }, include: { owner: true, team: true } });
   }
 
   async create(data: Omit<Project, "id" | "createdAt" | "updatedAt">): Promise<Project> {
-    
     return prisma.project.create({ data });
   }
 
