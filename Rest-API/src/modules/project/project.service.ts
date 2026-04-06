@@ -2,7 +2,6 @@ import { Project } from "../../generated/prisma/client";
 import { ProjectRepository } from "./project.repository";
 import { CreateProjectDTO, UpdateProjectDTO } from "./project.validators";
 import { NotFoundException } from "../shared/utils/exceptions";
-import { ProjectResponseDTO } from "./project.types";
 import { getTakeSkip, PaginatedResponse, pagingDTO } from "modules/shared/utils/utils";
 
 export class ProjectService {
@@ -12,14 +11,14 @@ export class ProjectService {
     this.projectRepository = projectRepository;
   }
 
-  async getAllProjects(page?: pagingDTO): Promise<PaginatedResponse<ProjectResponseDTO>> {
+  async getAllProjects(page?: pagingDTO): Promise<PaginatedResponse<Project>> {
         
       let options = getTakeSkip(page);
 
      return this.projectRepository.findMany(options);
   }
 
-  async getProjectById(id: number): Promise<ProjectResponseDTO> {
+  async getProjectById(id: number): Promise<Project> {
     const project = await this.projectRepository.findById(id);
     if (!project) {
       throw new NotFoundException(`Project with id ${id} not found`);
@@ -27,14 +26,19 @@ export class ProjectService {
     return project;
   }
 
-  async createProject(data: CreateProjectDTO): Promise<ProjectResponseDTO> {
+  async createProject(data: CreateProjectDTO): Promise<Project> {
     return this.projectRepository.create({
-      ...data,
+      name: data.name,
       status: data.status ?? 0,
+      owner: { connect: { id: data.ownerId } },
+      team: { connect: { id: data.teamId } },
+      tasks: data.tasks ? {
+        create: data.tasks 
+        } : undefined,
     });
   }
 
-  async updateProject(id: number, data: UpdateProjectDTO): Promise<ProjectResponseDTO> {
+  async updateProject(id: number, data: UpdateProjectDTO): Promise<Project> {
     const existingProject = await this.projectRepository.findById(id);
     if (!existingProject) {
       throw new NotFoundException(`Project with id ${id} not found`);
@@ -42,7 +46,7 @@ export class ProjectService {
     return this.projectRepository.update(id, data);
   }
 
-  async deleteProject(id: number): Promise<ProjectResponseDTO> {
+  async deleteProject(id: number): Promise<Project> {
     const existingProject = await this.projectRepository.findById(id);
     if (!existingProject) {
       throw new NotFoundException(`Project with id ${id} not found`);

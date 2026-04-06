@@ -3,12 +3,10 @@ import type { Application, Request, Response } from "express";
 import dotenv from "dotenv";
 import 'module-alias/register';
 import { prisma } from "./db/prisma-client";
-import userRoutes from "./modules/user/user.routes";
-import teamRoutes from "./modules/team/team.routes";
-import projectRoutes from "./modules/project/project.routes";
 import { errorHandler } from "./modules/shared/middlewares/errorHandler";
 import { requestLogger } from "./modules/shared/middlewares/requestLogger";
 import { logger } from "./modules/shared/utils/logger";
+import { setupRoutes } from "routes";
 
 dotenv.config();
 
@@ -23,12 +21,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to Express & TypeScript Server");
 })
 
-
-
-app.use("/users", userRoutes);
-app.use("/teams", teamRoutes);
-app.use("/projects", projectRoutes);
-
+setupRoutes(app);
 
 app.use(errorHandler);
 
@@ -53,7 +46,6 @@ app.listen(PORT, async () => {
 
     await prisma.$connect();
     await prisma.$executeRaw`SELECT 1`; // Test query to confirm connection
-    console.log(process.env.DATABASE_URL)
     logger.info(`Database connected successfully at ${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`);
 
   } catch (error) {

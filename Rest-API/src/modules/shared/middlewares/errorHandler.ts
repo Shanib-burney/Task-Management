@@ -41,7 +41,7 @@ export const errorHandler = (
 
       }
       // Log it cleanly based on the parsed data
-      logger.warn(`Handled DB error: ${prismaError.message}`, { requestId, ...prismaError });
+      logger.warn(`Handled DB error: ${prismaError.message}`, { requestId });
 
       return res.status(prismaError.statusCode).json({
         message: prismaError.message,

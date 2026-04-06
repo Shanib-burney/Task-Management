@@ -17,8 +17,7 @@ export class TeamService {
   }
 
   async createTeam(data: Omit<Team, "id" | "createdAt" | "updatedAt">): Promise<Team> {
-    // Add any business logic/validation here before calling the repository
-    return this.teamRepository.create(data);
+    return this.teamRepository.create({name: data.name});
   }
 
   async updateTeam(id: number, data: Partial<Omit<Team, "id">>): Promise<Team> {
