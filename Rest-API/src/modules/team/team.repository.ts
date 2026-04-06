@@ -1,10 +1,19 @@
+import { PaginatedResponse } from "modules/shared/utils/utils";
 import { prisma } from "../../db/prisma-client";
 import { Team } from "../../generated/prisma/client";
 import { BaseRepository } from "../shared/utils/base-repository";
 
 export class TeamRepository extends BaseRepository {
-  async findMany(): Promise<Team[]> {
-    return prisma.team.findMany();
+  async findMany(options?: { take: number; skip: number }): Promise<PaginatedResponse<Team>> {
+    const [teams, total] = await Promise.all([
+      prisma.team.findMany(options),
+      prisma.team.count()
+    ]);
+
+    return {
+      rows: teams,
+      total
+    };
   }
 
   async findById(id: number): Promise<Team | null> {

@@ -4,6 +4,7 @@ import { CreateProjectDTO, UpdateProjectDTO } from "./project.validators";
 import { BadRequestException } from "../shared/utils/exceptions";
 import HTTP_STATUS_CODE from "../shared/utils/http-status-code";
 import { logger } from "../shared/utils/logger";
+import { pagingDTO } from "modules/shared/utils/utils";
 
 export class ProjectController {
   private projectService: ProjectService;
@@ -12,9 +13,9 @@ export class ProjectController {
     this.projectService = projectService;
   }
 
-  async getAllProjects(req: Request, res: Response): Promise<void> {
+  async getAllProjects(req: Request, res: Response<{}, { validatedQuery: pagingDTO }>): Promise<void> {
     try {
-      const projects = await this.projectService.getAllProjects();
+      const projects = await this.projectService.getAllProjects(res.locals.validatedQuery);
       res.json(projects);
     } catch (error: unknown) {
       throw error;

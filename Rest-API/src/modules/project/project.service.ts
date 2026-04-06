@@ -3,6 +3,7 @@ import { ProjectRepository } from "./project.repository";
 import { CreateProjectDTO, UpdateProjectDTO } from "./project.validators";
 import { NotFoundException } from "../shared/utils/exceptions";
 import { ProjectResponseDTO } from "./project.types";
+import { getTakeSkip, PaginatedResponse, pagingDTO } from "modules/shared/utils/utils";
 
 export class ProjectService {
   private projectRepository: ProjectRepository;
@@ -11,8 +12,11 @@ export class ProjectService {
     this.projectRepository = projectRepository;
   }
 
-  async getAllProjects(): Promise<ProjectResponseDTO[]> {
-    return this.projectRepository.findMany();
+  async getAllProjects(page?: pagingDTO): Promise<PaginatedResponse<ProjectResponseDTO>> {
+        
+      let options = getTakeSkip(page);
+
+     return this.projectRepository.findMany(options);
   }
 
   async getProjectById(id: number): Promise<ProjectResponseDTO> {

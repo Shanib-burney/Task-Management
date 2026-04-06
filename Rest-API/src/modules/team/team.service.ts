@@ -1,5 +1,6 @@
 import { TeamRepository } from "./team.repository";
 import { Team } from "../../generated/prisma/client";
+import { PaginatedResponse, pagingDTO } from "modules/shared/utils/utils";
 export class TeamService {
   private teamRepository: TeamRepository;
 
@@ -7,7 +8,7 @@ export class TeamService {
     this.teamRepository = teamRepository;
   }
 
-  async getAllTeams(): Promise<Team[]> {
+  async getAllTeams(page?: pagingDTO): Promise<PaginatedResponse<Team>> {
     return this.teamRepository.findMany();
   }
 

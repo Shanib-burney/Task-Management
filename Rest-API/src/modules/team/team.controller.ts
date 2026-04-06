@@ -4,6 +4,7 @@ import { CreateTeamDTO, UpdateTeamDTO } from "./team.validators";
 import { BadRequestException } from "../shared/utils/exceptions";
 import HTTP_STATUS_CODE from "../shared/utils/http-status-code";
 import { logger } from "../shared/utils/logger";
+import { pagingDTO } from "modules/shared/utils/utils";
 
 export class TeamController {
   private teamService: TeamService;
@@ -12,7 +13,7 @@ export class TeamController {
     this.teamService = teamService;
   }
 
-  async getAllTeams(req: Request, res: Response): Promise<void> {
+  async getAllTeams(req: Request, res: Response<{}, { validatedQuery: pagingDTO }>): Promise<void> {
     try {
       const teams = await this.teamService.getAllTeams();
       res.json(teams);
