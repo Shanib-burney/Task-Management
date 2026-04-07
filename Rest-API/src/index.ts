@@ -36,8 +36,6 @@ process.on("uncaughtException", (err) => {
   console.error("Uncaught Exception:", err);
   //  process.exit(1)
 });
-const connectionString = process.env.DATABASE_URL;
-
 
 app.listen(PORT, async () => {
   logger.info(`Server is running on http://localhost:${PORT}`);

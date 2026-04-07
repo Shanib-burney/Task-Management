@@ -1,6 +1,6 @@
 import { TeamRepository } from "./team.repository";
 import { Team } from "@prisma-client";
-import { PaginatedResponse, pagingDTO } from "modules/shared/utils/utils";
+import { getTakeSkip, PaginatedResponse, pagingDTO } from "modules/shared/utils/utils";
 export class TeamService {
   private teamRepository: TeamRepository;
 
@@ -9,7 +9,9 @@ export class TeamService {
   }
 
   async getAllTeams(page?: pagingDTO): Promise<PaginatedResponse<Team>> {
-    return this.teamRepository.findMany();
+    let options = getTakeSkip(page);
+
+    return this.teamRepository.findMany(options);
   }
 
   async getTeamById(id: number): Promise<Team | null> {
@@ -17,7 +19,7 @@ export class TeamService {
   }
 
   async createTeam(data: Omit<Team, "id" | "createdAt" | "updatedAt">): Promise<Team> {
-    return this.teamRepository.create({name: data.name});
+    return this.teamRepository.create({ name: data.name });
   }
 
   async updateTeam(id: number, data: Partial<Omit<Team, "id">>): Promise<Team> {

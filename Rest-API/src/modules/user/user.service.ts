@@ -4,7 +4,7 @@ import { CreateUserDTO, UpdateUserDTO } from "./user.validators";
 import bcrypt from "bcryptjs";
 import { UserRoles, UserStatus } from "./user.enum";
 import { ConflictException, NotFoundException } from "../shared/utils/exceptions";
-import { UserResponseDTO, UserWithoutPassword } from "./user.types";
+import { UserResponseDTO } from "./user.types";
 import { getTakeSkip, PaginatedResponse, pagingDTO } from "../shared/utils/utils";
 
 export class UserService {
@@ -63,7 +63,7 @@ export class UserService {
       ...remainingData,
       role: data.role ? Number(data.role) : UserRoles.USER,
       status: data.status ?? UserStatus.ACTIVE,
-      passwordHash: hashedPassword
+      passwordHash: hashedPassword ?? password
     };
     return this.userRepository.create(userData);
 
