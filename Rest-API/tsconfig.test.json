@@ -6,17 +6,7 @@
     "types": ["jest", "node"],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
-    "baseUrl": "./",
-    "paths": {
-      "@prisma-client": [
-        "src/generated/prisma/client"
-      ],
-        "@prisma-client/models": [
-        "src/generated/prisma/models"
-      ],
-      "src/*": ["src/*"]
-    }
+    "resolveJsonModule": true
   },
   "include": [
     "tests/**/*",
