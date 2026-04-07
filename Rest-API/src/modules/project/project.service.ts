@@ -2,7 +2,7 @@ import { Project } from "@prisma-client";
 import { ProjectRepository } from "./project.repository";
 import { CreateProjectDTO, UpdateProjectDTO } from "./project.validators";
 import { NotFoundException } from "../shared/utils/exceptions";
-import { getTakeSkip, PaginatedResponse, pagingDTO } from "modules/shared/utils/utils";
+import { getTakeSkip, PaginatedResponse, pagingDTO } from "../shared/utils/utils";
 
 export class ProjectService {
   private projectRepository: ProjectRepository;

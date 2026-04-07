@@ -1,4 +1,4 @@
-import { enumSchema } from "modules/shared/utils/utils";
+import { enumSchema } from "../shared/utils/utils";
 import { z } from "zod";
 import { ProjectStatus, TaskStatus } from "./project.enums";
 

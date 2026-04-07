@@ -18,7 +18,7 @@ module.exports = [
         languageOptions: {
             parser: require('@typescript-eslint/parser'),
             parserOptions: {
-                project: ['./tsconfig.json'],
+                project: ['./tsconfig.lint.json'],
                 tsconfigRootDir: __dirname,
                 sourceType: 'module',
                 ecmaVersion: 2020,
@@ -33,6 +33,11 @@ module.exports = [
             'import/resolver': {
                 typescript: {
                     alwaysTryTypes: true,
+                    project: './tsconfig.lint.json',
+                },
+                node: {
+                    paths: ['src'],
+                    extensions: ['.js', '.ts', '.json'],
                 },
             },
         },

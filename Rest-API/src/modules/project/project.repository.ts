@@ -1,8 +1,8 @@
-import { PaginatedResponse } from "modules/shared/utils/utils";
+import { PaginatedResponse } from "../shared/utils/utils";
 import { prisma } from "../../db/prisma-client";
 import { Project } from "@prisma-client";
 import { BaseRepository } from "../shared/utils/base-repository";
-import { ProjectCreateInput, ProjectFindManyArgs } from "generated/prisma/models";
+import { ProjectCreateInput, ProjectFindManyArgs } from "@prisma-client/models";
 
 export class ProjectRepository extends BaseRepository {
   async findMany(options?: { take: number; skip: number }): Promise<PaginatedResponse<Project>> {

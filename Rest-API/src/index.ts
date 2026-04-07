@@ -6,7 +6,7 @@ import { prisma } from "./db/prisma-client";
 import { errorHandler } from "./modules/shared/middlewares/errorHandler";
 import { requestLogger } from "./modules/shared/middlewares/requestLogger";
 import { logger } from "./modules/shared/utils/logger";
-import { setupRoutes } from "routes";
+import { setupRoutes } from "./routes";
 
 dotenv.config();
 
@@ -25,7 +25,22 @@ setupRoutes(app);
 
 app.use(errorHandler);
 
+// Export app for testing
+export { app };
 
+// Database connection
+if (process.env.NODE_ENV !== 'test') {
+  (async () => {
+    try {
+      await prisma.$connect();
+      await prisma.$executeRaw`SELECT 1`; // Test query to confirm connection
+      logger.info(`Database connected successfully at ${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`);
+    } catch (error) {
+      logger.error("Database connection failed:", error);
+      process.exit(1);
+    }
+  })();
+}
 
 process.on("unhandledRejection", (reason) => {
   console.error("Unhandled Rejection:", reason);
@@ -37,22 +52,12 @@ process.on("uncaughtException", (err) => {
   //  process.exit(1)
 });
 
-app.listen(PORT, async () => {
-  logger.info(`Server is running on http://localhost:${PORT}`);
-
-  try {
-
-    await prisma.$connect();
-    await prisma.$executeRaw`SELECT 1`; // Test query to confirm connection
-    logger.info(`Database connected successfully at ${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`);
-
-  } catch (error) {
-    logger.error("Database connection failed:", error);
-
-    // Optional but recommended in production
-    process.exit(1);
-  }
-});
+// Only start server if not in test environment
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    logger.info(`Server is running on http://localhost:${PORT}`);
+  });
+}
 
 
 

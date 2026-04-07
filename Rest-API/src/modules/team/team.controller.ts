@@ -4,7 +4,7 @@ import { CreateTeamDTO, UpdateTeamDTO } from "./team.validators";
 import { BadRequestException } from "../shared/utils/exceptions";
 import HTTP_STATUS_CODE from "../shared/utils/http-status-code";
 import { logger } from "../shared/utils/logger";
-import { pagingDTO } from "modules/shared/utils/utils";
+import { pagingDTO } from "../shared/utils/utils";
 
 export class TeamController {
   private teamService: TeamService;

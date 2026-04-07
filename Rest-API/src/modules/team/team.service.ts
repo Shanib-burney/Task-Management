@@ -1,6 +1,6 @@
 import { TeamRepository } from "./team.repository";
 import { Team } from "@prisma-client";
-import { getTakeSkip, PaginatedResponse, pagingDTO } from "modules/shared/utils/utils";
+import { getTakeSkip, PaginatedResponse, pagingDTO } from "../shared/utils/utils";
 export class TeamService {
   private teamRepository: TeamRepository;
 

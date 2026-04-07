@@ -2,24 +2,19 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "commonjs",
-    "moduleResolution": "node", // ✅ Node-style resolution
-    "outDir": "./dist",
-    "rootDir": "./src",
+    "moduleResolution": "node",
     "strict": true,
-    "esModuleInterop": true, // ✅ keep this (important)
+    "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": "./src",
+    "baseUrl": "./",
     "paths": {
       "@prisma-client": [
-        "generated/prisma/client"
+        "src/generated/prisma/client"
+      ],
+      "@prisma-client/models": [
+        "src/generated/prisma/models"
       ]
     }
-  },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  }
 }
