@@ -1,12 +1,12 @@
-import express from "express";
-import type { Application, Request, Response } from "express";
-import dotenv from "dotenv";
+import express from 'express';
+import type { Application, Request, Response } from 'express';
+import dotenv from 'dotenv';
 import 'module-alias/register';
-import { prisma } from "./db/prisma-client";
-import { errorHandler } from "./modules/shared/middlewares/errorHandler";
-import { requestLogger } from "./modules/shared/middlewares/requestLogger";
-import { logger } from "./modules/shared/utils/logger";
-import { setupRoutes } from "./routes";
+import { prisma } from './db/prisma-client';
+import { errorHandler } from './modules/shared/middlewares/errorHandler';
+import { requestLogger } from './modules/shared/middlewares/requestLogger';
+import { logger } from './modules/shared/utils/logger';
+import { setupRoutes } from './routes';
 
 dotenv.config();
 
@@ -17,9 +17,9 @@ app.use(express.json());
 
 app.use(requestLogger);
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Welcome to Express & TypeScript Server");
-})
+app.get('/', (req: Request, res: Response) => {
+  res.send('Welcome to Express & TypeScript Server');
+});
 
 setupRoutes(app);
 
@@ -34,21 +34,23 @@ if (process.env.NODE_ENV !== 'test') {
     try {
       await prisma.$connect();
       await prisma.$executeRaw`SELECT 1`; // Test query to confirm connection
-      logger.info(`Database connected successfully at ${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`);
+      logger.info(
+        `Database connected successfully at ${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
+      );
     } catch (error) {
-      logger.error("Database connection failed:", error);
+      logger.error('Database connection failed:', error);
       process.exit(1);
     }
   })();
 }
 
-process.on("unhandledRejection", (reason) => {
-  console.error("Unhandled Rejection:", reason);
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled Rejection:', reason);
   //  process.exit(1)
 });
 
-process.on("uncaughtException", (err) => {
-  console.error("Uncaught Exception:", err);
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
   //  process.exit(1)
 });
 
@@ -58,8 +60,6 @@ if (process.env.NODE_ENV !== 'test') {
     logger.info(`Server is running on http://localhost:${PORT}`);
   });
 }
-
-
 
 // app.get("/error", async (req: Request, res: Response) => {
 

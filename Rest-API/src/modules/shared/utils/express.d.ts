@@ -12,7 +12,6 @@
 
 // This empty export is necessary to make this a module
 
-
 declare global {
   namespace Express {
     export interface Request {
@@ -23,4 +22,4 @@ declare global {
     }
   }
 }
-export {}; 
+export {};

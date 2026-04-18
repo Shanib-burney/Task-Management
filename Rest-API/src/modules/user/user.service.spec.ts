@@ -4,7 +4,7 @@ import { User } from '@prisma-client';
 import { CreateUserDTO, UpdateUserDTO } from './user.validators';
 import { UserRoles, UserStatus } from './user.enum';
 import { ConflictException, NotFoundException } from '../shared/utils/exceptions';
-import {  UserWithoutPassword } from './user.types';
+import { UserWithoutPassword } from './user.types';
 import { PaginatedResponse } from '../shared/utils/utils';
 import bcrypt from 'bcryptjs';
 
@@ -31,9 +31,20 @@ describe('UserService', () => {
   describe('getAllUsers', () => {
     it('should return paginated users with role and status labels', async () => {
       const mockUsers: UserWithoutPassword[] = [
-        { id: 1, name: 'John', email: 'john@example.com', role: 1, status: 1, createdAt: new Date(), updatedAt: new Date() },
+        {
+          id: 1,
+          name: 'John',
+          email: 'john@example.com',
+          role: 1,
+          status: 1,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
       ];
-      const mockPaginatedResult: PaginatedResponse<UserWithoutPassword> = { rows: mockUsers, total: 1 };
+      const mockPaginatedResult: PaginatedResponse<UserWithoutPassword> = {
+        rows: mockUsers,
+        total: 1,
+      };
 
       mockUserRepository.findMany.mockResolvedValue(mockPaginatedResult);
 
@@ -41,20 +52,33 @@ describe('UserService', () => {
 
       expect(mockUserRepository.findMany).toHaveBeenCalledWith({ take: 10, skip: 0 });
       expect(result).toEqual({
-        rows: [{
-          ...mockUsers[0],
-          role: 'USER',
-          status: 'ACTIVE',
-        }],
+        rows: [
+          {
+            ...mockUsers[0],
+            role: 'USER',
+            status: 'ACTIVE',
+          },
+        ],
         total: 1,
       });
     });
 
     it('should handle undefined role and status', async () => {
       const mockUsers: UserWithoutPassword[] = [
-        { id: 1, name: 'John', email: 'john@example.com', role: 0, status: 0, createdAt: new Date(), updatedAt: new Date() },
+        {
+          id: 1,
+          name: 'John',
+          email: 'john@example.com',
+          role: 0,
+          status: 0,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
       ];
-      const mockPaginatedResult: PaginatedResponse<UserWithoutPassword> = { rows: mockUsers, total: 1 };
+      const mockPaginatedResult: PaginatedResponse<UserWithoutPassword> = {
+        rows: mockUsers,
+        total: 1,
+      };
 
       mockUserRepository.findMany.mockResolvedValue(mockPaginatedResult);
 
@@ -67,7 +91,15 @@ describe('UserService', () => {
 
   describe('getUserById', () => {
     it('should return user with role and status labels', async () => {
-      const mockUser = { id: 1, name: 'John', email: 'john@example.com', role: 1, status: 1, createdAt: new Date(), updatedAt: new Date() };
+      const mockUser = {
+        id: 1,
+        name: 'John',
+        email: 'john@example.com',
+        role: 1,
+        status: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
 
       mockUserRepository.findById.mockResolvedValue(mockUser);
 
@@ -130,12 +162,23 @@ describe('UserService', () => {
     });
 
     it('should throw ConflictException if email already exists', async () => {
-      const existingUser = { id: 1, name: 'Existing', email: 'john@example.com', role: 1, status: 1, passwordHash: 'hash', createdAt: new Date(), updatedAt: new Date() };
+      const existingUser = {
+        id: 1,
+        name: 'Existing',
+        email: 'john@example.com',
+        role: 1,
+        status: 1,
+        passwordHash: 'hash',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
 
       mockUserRepository.findByEmail.mockResolvedValue(existingUser);
 
       await expect(userService.createUser(createUserData)).rejects.toThrow(ConflictException);
-      await expect(userService.createUser(createUserData)).rejects.toThrow('User with Email john@example.com already exists');
+      await expect(userService.createUser(createUserData)).rejects.toThrow(
+        'User with Email john@example.com already exists',
+      );
     });
 
     it('should use default role and status if not provided', async () => {
@@ -155,7 +198,7 @@ describe('UserService', () => {
         expect.objectContaining({
           role: UserRoles.USER,
           status: UserStatus.ACTIVE,
-        })
+        }),
       );
     });
   });
@@ -167,8 +210,21 @@ describe('UserService', () => {
     };
 
     it('should update user successfully', async () => {
-      const existingUser: UserWithoutPassword = { id: 1, name: 'Old Name', email: 'old@example.com', role: 1, status: 1, createdAt: new Date(), updatedAt: new Date() };
-      const updatedUser: User = { ...existingUser, name: 'Updated Name', email: 'updated@example.com', passwordHash: 'hash' };
+      const existingUser: UserWithoutPassword = {
+        id: 1,
+        name: 'Old Name',
+        email: 'old@example.com',
+        role: 1,
+        status: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      const updatedUser: User = {
+        ...existingUser,
+        name: 'Updated Name',
+        email: 'updated@example.com',
+        passwordHash: 'hash',
+      };
 
       mockUserRepository.findById.mockResolvedValue(existingUser);
       mockUserRepository.findByEmail.mockResolvedValue(null);
@@ -186,22 +242,51 @@ describe('UserService', () => {
       mockUserRepository.findById.mockResolvedValue(null);
 
       await expect(userService.updateUser(1, updateData)).rejects.toThrow(NotFoundException);
-      await expect(userService.updateUser(1, updateData)).rejects.toThrow('User with id 1 not found');
+      await expect(userService.updateUser(1, updateData)).rejects.toThrow(
+        'User with id 1 not found',
+      );
     });
 
     it('should throw ConflictException if email already exists', async () => {
-      const existingUser = { id: 1, name: 'John', email: 'john@example.com', role: 1, status: 1, createdAt: new Date(), updatedAt: new Date() };
-      const conflictingUser = { id: 2, name: 'Jane', email: 'updated@example.com', role: 1, status: 1, passwordHash: 'hash', createdAt: new Date(), updatedAt: new Date() };
+      const existingUser = {
+        id: 1,
+        name: 'John',
+        email: 'john@example.com',
+        role: 1,
+        status: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      const conflictingUser = {
+        id: 2,
+        name: 'Jane',
+        email: 'updated@example.com',
+        role: 1,
+        status: 1,
+        passwordHash: 'hash',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
 
       mockUserRepository.findById.mockResolvedValue(existingUser);
       mockUserRepository.findByEmail.mockResolvedValue(conflictingUser);
 
       await expect(userService.updateUser(1, updateData)).rejects.toThrow(ConflictException);
-      await expect(userService.updateUser(1, updateData)).rejects.toThrow('User with Email updated@example.com already exists');
+      await expect(userService.updateUser(1, updateData)).rejects.toThrow(
+        'User with Email updated@example.com already exists',
+      );
     });
 
     it('should hash password if provided', async () => {
-      const existingUser = { id: 1, name: 'John', email: 'john@example.com', role: 1, status: 1, createdAt: new Date(), updatedAt: new Date() };
+      const existingUser = {
+        id: 1,
+        name: 'John',
+        email: 'john@example.com',
+        role: 1,
+        status: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
       const updateWithPassword = { ...updateData, password: 'newpassword' };
 
       mockUserRepository.findById.mockResolvedValue(existingUser);
@@ -212,15 +297,27 @@ describe('UserService', () => {
       await userService.updateUser(1, updateWithPassword);
 
       expect(bcrypt.hash).toHaveBeenCalledWith('newpassword', 10);
-      expect(mockUserRepository.update).toHaveBeenCalledWith(1, expect.objectContaining({
-        passwordHash: 'newHash',
-      }));
+      expect(mockUserRepository.update).toHaveBeenCalledWith(
+        1,
+        expect.objectContaining({
+          passwordHash: 'newHash',
+        }),
+      );
     });
   });
 
   describe('deleteUser', () => {
     it('should delete user successfully', async () => {
-      const mockDeletedUser = { id: 1, name: 'John', email: 'john@example.com', role: 1, status: 1, passwordHash: 'hash', createdAt: new Date(), updatedAt: new Date() };
+      const mockDeletedUser = {
+        id: 1,
+        name: 'John',
+        email: 'john@example.com',
+        role: 1,
+        status: 1,
+        passwordHash: 'hash',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
 
       mockUserRepository.delete.mockResolvedValue(mockDeletedUser);
 

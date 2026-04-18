@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 export const createTeamSchema = z.object({
   name: z.string().min(1),
 });
@@ -9,3 +9,8 @@ export const updateTeamSchema = z.object({
 
 export type CreateTeamDTO = z.infer<typeof createTeamSchema>;
 export type UpdateTeamDTO = z.infer<typeof updateTeamSchema>;
+
+export const addMemberIdSchema = z.object({
+  id: z.string().min(1),
+  userId: z.string().min(1),
+});

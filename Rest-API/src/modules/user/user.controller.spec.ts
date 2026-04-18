@@ -56,13 +56,23 @@ describe('UserController', () => {
       mockUserService.getAllUsers.mockRejectedValue(error);
       mockResponse.locals = { validatedQuery: {} };
 
-      await expect(userController.getAllUsers(mockRequest as Request, mockResponse as any)).rejects.toThrow(error);
+      await expect(
+        userController.getAllUsers(mockRequest as Request, mockResponse as any),
+      ).rejects.toThrow(error);
     });
   });
 
   describe('getUserById', () => {
     it('should return user successfully', async () => {
-      const mockUser = { id: 1, name: 'John', email: 'john@example.com', role: 'USER', status: 'ACTIVE', createdAt: new Date(), updatedAt: new Date() };
+      const mockUser = {
+        id: 1,
+        name: 'John',
+        email: 'john@example.com',
+        role: 'USER',
+        status: 'ACTIVE',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
       mockRequest.params = { id: '1' };
       mockUserService.getUserById.mockResolvedValue(mockUser);
 
@@ -75,15 +85,21 @@ describe('UserController', () => {
     it('should throw BadRequestException for invalid id', async () => {
       mockRequest.params = { id: 'invalid' };
 
-      await expect(userController.getUserById(mockRequest as Request, mockResponse as Response)).rejects.toThrow(BadRequestException);
-      await expect(userController.getUserById(mockRequest as Request, mockResponse as Response)).rejects.toThrow('Invalid user ID');
+      await expect(
+        userController.getUserById(mockRequest as Request, mockResponse as Response),
+      ).rejects.toThrow(BadRequestException);
+      await expect(
+        userController.getUserById(mockRequest as Request, mockResponse as Response),
+      ).rejects.toThrow('Invalid user ID');
     });
 
     it('should throw NotFoundException if user not found', async () => {
       mockRequest.params = { id: '1' };
       mockUserService.getUserById.mockRejectedValue(new NotFoundException('User not found'));
 
-      await expect(userController.getUserById(mockRequest as Request, mockResponse as Response)).rejects.toThrow(NotFoundException);
+      await expect(
+        userController.getUserById(mockRequest as Request, mockResponse as Response),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -142,7 +158,9 @@ describe('UserController', () => {
       mockReq.body = updateUserData;
       mockUserService.updateUser.mockRejectedValue(error);
 
-      await expect(userController.patchUser(mockReq, mockResponse as Response)).rejects.toThrow(error);
+      await expect(userController.patchUser(mockReq, mockResponse as Response)).rejects.toThrow(
+        error,
+      );
     });
   });
 
@@ -161,8 +179,12 @@ describe('UserController', () => {
     it('should throw BadRequestException for invalid id', async () => {
       mockRequest.params = { id: 'invalid' };
 
-      await expect(userController.deleteUser(mockRequest as Request, mockResponse as Response)).rejects.toThrow(BadRequestException);
-      await expect(userController.deleteUser(mockRequest as Request, mockResponse as Response)).rejects.toThrow('Invalid user ID');
+      await expect(
+        userController.deleteUser(mockRequest as Request, mockResponse as Response),
+      ).rejects.toThrow(BadRequestException);
+      await expect(
+        userController.deleteUser(mockRequest as Request, mockResponse as Response),
+      ).rejects.toThrow('Invalid user ID');
     });
 
     it('should throw error if service throws', async () => {
@@ -170,7 +192,9 @@ describe('UserController', () => {
       mockRequest.params = { id: '1' };
       mockUserService.deleteUser.mockRejectedValue(error);
 
-      await expect(userController.deleteUser(mockRequest as Request, mockResponse as Response)).rejects.toThrow(error);
+      await expect(
+        userController.deleteUser(mockRequest as Request, mockResponse as Response),
+      ).rejects.toThrow(error);
     });
   });
 });

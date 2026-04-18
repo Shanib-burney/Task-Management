@@ -24,10 +24,18 @@ module.exports = [
                 ecmaVersion: 2020,
             },
         },
+        extends: [
+            'eslint:recommended',
+            'plugin:@typescript-eslint/recommended',
+            'plugin:import/recommended',
+            'plugin:import/typescript',
+            'plugin:prettier/recommended',
+        ],
         plugins: {
             '@typescript-eslint': require('@typescript-eslint/eslint-plugin'),
             import: require('eslint-plugin-import'),
             node: require('eslint-plugin-node'),
+            prettier: require('eslint-plugin-prettier'),
         },
         settings: {
             'import/resolver': {
@@ -48,6 +56,7 @@ module.exports = [
             'import/no-unresolved': 'error',
             'node/no-missing-import': 'off',
             'node/no-unsupported-features/es-syntax': 'off',
+            'prettier/prettier': ['error', { endOfLine: 'lf' }],
         },
     },
 ];

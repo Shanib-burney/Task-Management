@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
-import { TeamService } from "./team.service";
-import { CreateTeamDTO, UpdateTeamDTO } from "./team.validators";
-import { BadRequestException } from "../shared/utils/exceptions";
-import HTTP_STATUS_CODE from "../shared/utils/http-status-code";
-import { logger } from "../shared/utils/logger";
-import { pagingDTO } from "../shared/utils/utils";
+import { Request, Response } from 'express';
+import { TeamService } from './team.service';
+import { CreateTeamDTO, UpdateTeamDTO } from './team.validators';
+import { BadRequestException } from '../shared/utils/exceptions';
+import HTTP_STATUS_CODE from '../shared/utils/http-status-code';
+import { logger } from '../shared/utils/logger';
+import { pagingDTO } from '../shared/utils/utils';
 
 export class TeamController {
   private teamService: TeamService;
@@ -26,13 +26,13 @@ export class TeamController {
     try {
       const id = Number(req.params.id);
       if (Number.isNaN(id)) {
-        throw new BadRequestException("Invalid team ID");
+        throw new BadRequestException('Invalid team ID');
       }
 
       const team = await this.teamService.getTeamById(id);
       res.json(team);
     } catch (error: unknown) {
-      logger.warn("Failed to fetch team by id", { error, requestId: req.requestId });
+      logger.warn('Failed to fetch team by id', { error, requestId: req.requestId });
       throw error;
     }
   }
@@ -50,7 +50,7 @@ export class TeamController {
     try {
       const id = Number(req.params.id);
       if (Number.isNaN(id)) {
-        throw new BadRequestException("Invalid team ID");
+        throw new BadRequestException('Invalid team ID');
       }
 
       const team = await this.teamService.updateTeam(id, req.body);
@@ -64,11 +64,25 @@ export class TeamController {
     try {
       const id = Number(req.params.id);
       if (Number.isNaN(id)) {
-        throw new BadRequestException("Invalid team ID");
+        throw new BadRequestException('Invalid team ID');
       }
 
       await this.teamService.deleteTeam(id);
       res.status(HTTP_STATUS_CODE.NO_CONTENT).send();
+    } catch (error: unknown) {
+      throw error;
+    }
+  }
+  async addMember(req: Request<{ id: string; userId: string }>, res: Response): Promise<void> {
+    try {
+      const id = Number(req.params.id);
+      const userId = Number(req.params.userId);
+      if (Number.isNaN(id) || Number.isNaN(userId)) {
+        throw new BadRequestException('Invalid team ID or user ID');
+      }
+
+      const team = await this.teamService.addMember(id, userId);
+      res.json(team);
     } catch (error: unknown) {
       throw error;
     }

@@ -1,11 +1,11 @@
-import { UserRepository } from "./user.repository";
-import { User } from "@prisma-client";
-import { CreateUserDTO, UpdateUserDTO } from "./user.validators";
-import bcrypt from "bcryptjs";
-import { UserRoles, UserStatus } from "./user.enum";
-import { ConflictException, NotFoundException } from "../shared/utils/exceptions";
-import { UserResponseDTO } from "./user.types";
-import { getTakeSkip, PaginatedResponse, pagingDTO } from "../shared/utils/utils";
+import { UserRepository } from './user.repository';
+import { User } from '@prisma-client';
+import { CreateUserDTO, UpdateUserDTO } from './user.validators';
+import bcrypt from 'bcryptjs';
+import { UserRoles, UserStatus } from './user.enum';
+import { ConflictException, NotFoundException } from '../shared/utils/exceptions';
+import { UserResponseDTO } from './user.types';
+import { getTakeSkip, PaginatedResponse, pagingDTO } from '../shared/utils/utils';
 
 export class UserService {
   private userRepository: UserRepository;
@@ -14,26 +14,23 @@ export class UserService {
     this.userRepository = userRepository;
   }
 
-  async getAllUsers(page?: pagingDTO):Promise<PaginatedResponse<UserResponseDTO>> {
-   
-    
-   let options = getTakeSkip(page);
+  async getAllUsers(page?: pagingDTO): Promise<PaginatedResponse<UserResponseDTO>> {
+    let options = getTakeSkip(page);
 
     const result = await this.userRepository.findMany(options);
 
     return {
       rows: result.rows.map((user) => ({
         ...user,
-        role: user.role !== undefined ? UserRoles[user.role] : "",
-        status: user.status !== undefined ? UserStatus[user.status] : "",
+        role: user.role !== undefined ? UserRoles[user.role] : '',
+        status: user.status !== undefined ? UserStatus[user.status] : '',
       })),
-      total: result.total
-    }
+      total: result.total,
+    };
   }
   async getUserByEmail(email: string): Promise<User | null> {
     return this.userRepository.findByEmail(email);
   }
-
 
   async getUserById(id: number): Promise<UserResponseDTO | null> {
     const user = await this.userRepository.findById(id);
@@ -42,17 +39,15 @@ export class UserService {
     }
     return {
       ...user,
-      role: user.role ? UserRoles[user.role] : "",
-      status: user.status ? UserStatus[user.status] : "",
-    }
-
+      role: user.role ? UserRoles[user.role] : '',
+      status: user.status ? UserStatus[user.status] : '',
+    };
   }
 
   async createUser(data: CreateUserDTO): Promise<User> {
-
     const userByEmail = await this.userRepository.findByEmail(data.email);
     if (userByEmail) {
-      throw new ConflictException(`User with Email ${data.email} already exists`)
+      throw new ConflictException(`User with Email ${data.email} already exists`);
     }
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
@@ -63,17 +58,16 @@ export class UserService {
       ...remainingData,
       role: data.role ? Number(data.role) : UserRoles.USER,
       status: data.status ?? UserStatus.ACTIVE,
-      passwordHash: hashedPassword ?? password
+      passwordHash: hashedPassword ?? password,
     };
     return this.userRepository.create(userData);
-
   }
 
   async updateUser(id: number, data: UpdateUserDTO): Promise<User> {
     // Add any business logic/validation here
     const existingUser = await this.userRepository.findById(id);
     if (!existingUser) {
-      throw new NotFoundException(`User with id ${id} not found`)
+      throw new NotFoundException(`User with id ${id} not found`);
     }
 
     if (data.email) {

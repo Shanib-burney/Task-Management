@@ -1,0 +1,10 @@
+node_modules
+/dist
+src/generated
+src/db/prisma-client.ts
+/coverage
+.env
+.env.*
+**/.prisma/**
+eslint.config.js
+prisma.config.ts

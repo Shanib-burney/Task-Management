@@ -69,7 +69,7 @@ describe('Utils', () => {
 
       expect(result).toEqual({
         take: 10, // default size
-        skip: 0,  // (1 - 1) * 10 = 0
+        skip: 0, // (1 - 1) * 10 = 0
       });
     });
 

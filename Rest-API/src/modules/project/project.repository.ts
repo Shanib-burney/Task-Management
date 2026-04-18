@@ -1,42 +1,58 @@
-import { PaginatedResponse } from "../shared/utils/utils";
-import { prisma } from "../../db/prisma-client";
-import { Project } from "@prisma-client";
-import { BaseRepository } from "../shared/utils/base-repository";
-import { ProjectCreateInput, ProjectFindManyArgs } from "@prisma-client/models";
+import { PaginatedResponse } from '../shared/utils/utils';
+import { prisma } from '../../db/prisma-client';
+import { Project, User } from '@prisma-client';
+import { BaseRepository } from '../shared/utils/base-repository';
+import {
+  ProjectCreateInput,
+  ProjectFindManyArgs,
+  TaskCreateNestedManyWithoutProjectInput,
+  TaskCreateWithoutProjectInput,
+} from '@prisma-client/models';
 
 export class ProjectRepository extends BaseRepository {
   async findMany(options?: { take: number; skip: number }): Promise<PaginatedResponse<Project>> {
+    let projectOptions: ProjectFindManyArgs = {};
+    projectOptions = {
+      ...projectOptions,
+      take: options?.take,
+      skip: options?.skip,
+    };
 
+    const [project, total] = await Promise.all([
+      prisma.project.findMany(projectOptions),
+      prisma.project.count(),
+    ]);
 
-        let projectOptions: ProjectFindManyArgs ={}
-        projectOptions = {
-          ...projectOptions,
-          take: options?.take,
-          skip: options?.skip
-        }
-    
-        const [project, total] = await Promise.all([
-          prisma.project.findMany(projectOptions),
-          prisma.project.count()
-        ]);
-    
-    
-        return {
-          rows: project,
-          total,
-        };
-    
+    return {
+      rows: project,
+      total,
+    };
   }
 
   async findById(id: number): Promise<Project | null> {
-    return prisma.project.findUnique({ where: { id }, include: { tasks: true } });
+    return prisma.project.findUnique({
+      where: { id },
+      include: { tasks: { include: { comments: true } } },
+    });
   }
 
-  async create(data:ProjectCreateInput): Promise<Project> {
+  async create(data: ProjectCreateInput): Promise<Project> {
     return prisma.project.create({ data });
   }
 
-  async update(id: number, data: Partial<Omit<Project, "id">>): Promise<Project> {
+  async createTasks(id: number, data: TaskCreateWithoutProjectInput[]): Promise<Project> {
+    return prisma.project.update({
+      where: { id },
+      data: {
+        tasks: {
+          create: data,
+        },
+      },
+      include: { tasks: true },
+    });
+  }
+
+  async update(id: number, data: Partial<Omit<Project, 'id'>>): Promise<Project> {
     return prisma.project.update({ where: { id }, data });
   }
 
@@ -51,25 +67,25 @@ export class ProjectRepository extends BaseRepository {
 //       status: 1, // e.g., 1 = "In Progress"
 //       teamId: 1, // Links to an existing Team
 //       ownerId: 1, // Links to an existing User
-      
+
 //       // Here is the nested write magic:
 //       tasks: {
 //         create: [
-//           { 
-//             title: "Define Prisma schema", 
+//           {
+//             title: "Define Prisma schema",
 //             status: 1,
-//             description: "Update the schema with new relations." 
+//             description: "Update the schema with new relations."
 //           },
-//           { 
-//             title: "Setup Apollo Server", 
-//             status: 1 
+//           {
+//             title: "Setup Apollo Server",
+//             status: 1
 //           }
 //         ]
 //       }
 //     },
 //     // This tells Prisma to fetch and return the newly created tasks along with the project
 //     include: {
-//       tasks: true 
+//       tasks: true
 //     }
 //   });
 

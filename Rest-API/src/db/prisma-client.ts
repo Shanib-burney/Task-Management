@@ -33,7 +33,7 @@ export const prisma =
   new PrismaClient({
     adapter,
     errorFormat: 'minimal',
-    log: ["warn"],
+    log:  ['query', 'info', 'warn', 'error'],
   });
 
 if (process.env.NODE_ENV !== "production") {

@@ -1,17 +1,11 @@
-import { Request, Response, NextFunction } from "express";
-import { HttpException } from "../utils/exceptions";
-import { logger } from "../utils/logger";
-import HTTP_STATUS_CODE from "../utils/http-status-code";
-import { parsePrismaError } from "../utils/prisma-error-handler";
-import { isPrismaError } from "../utils/prisma-error-handler";
+import { Request, Response, NextFunction } from 'express';
+import { HttpException } from '../utils/exceptions';
+import { logger } from '../utils/logger';
+import HTTP_STATUS_CODE from '../utils/http-status-code';
+import { parsePrismaError } from '../utils/prisma-error-handler';
+import { isPrismaError } from '../utils/prisma-error-handler';
 
-export const errorHandler = (
-  err: any,
-  req: Request,
-  res: Response,
-  _next: NextFunction
-) => {
-
+export const errorHandler = (err: any, req: Request, res: Response, _next: NextFunction) => {
   const requestId = req.requestId;
 
   if (err instanceof HttpException) {
@@ -30,15 +24,13 @@ export const errorHandler = (
     const prismaError = parsePrismaError(err);
 
     if (prismaError) {
-
-      if (prismaError.errorCode == "DB_ENGINE_CRASH") {
-        logger.error("Prisma Rust Panic (CRITICAL)", {
-          requestId
+      if (prismaError.errorCode == 'DB_ENGINE_CRASH') {
+        logger.error('Prisma Rust Panic (CRITICAL)', {
+          requestId,
         });
 
         // Optional but recommended in production
         process.exit(1);
-
       }
       // Log it cleanly based on the parsed data
       logger.warn(`Handled DB error: ${prismaError.message}`, { requestId });
@@ -51,7 +43,6 @@ export const errorHandler = (
         requestId,
       });
     }
-
   }
 
   // 3. Catch-all for Express/Middleware generated HTTP errors (e.g., body-parser, multer)
@@ -63,10 +54,10 @@ export const errorHandler = (
     logger.warn(`Middleware Client Error [${middlewareStatus}]: ${err.message}`, { requestId });
 
     return res.status(middlewareStatus).json({
-      // Pass the middleware's message (e.g., "Unexpected end of JSON input") 
+      // Pass the middleware's message (e.g., "Unexpected end of JSON input")
       // or default to a generic "Bad Request"
-      message: err.message || "Bad Request",
-      errorCode: "CLIENT_ERROR",
+      message: err.message || 'Bad Request',
+      errorCode: 'CLIENT_ERROR',
       path: req.originalUrl,
       timestamp: new Date().toISOString(),
       requestId,
@@ -74,15 +65,14 @@ export const errorHandler = (
   }
   // Unknown error
   logger.error(`Unhandled error: ${err.message || err}`, {
-    requestId
-    , stack: err instanceof Error ? err.stack : undefined,
+    requestId,
+    stack: err instanceof Error ? err.stack : undefined,
     raw: err, // optional (be careful in prod logs)
   });
 
-
   res.status(HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR).json({
-    message: "Internal Server Error, please check the service logs for more details.",
-    errorCode: "INTERNAL_SERVER_ERROR",
+    message: 'Internal Server Error, please check the service logs for more details.',
+    errorCode: 'INTERNAL_SERVER_ERROR',
     path: req.originalUrl,
     timestamp: new Date().toISOString(),
     requestId,

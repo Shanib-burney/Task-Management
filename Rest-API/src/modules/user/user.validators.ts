@@ -1,6 +1,6 @@
-import { z } from "zod";
-import { enumSchema } from "../shared/utils/utils";
-import { UserRoles, UserStatus } from "./user.enum";
+import { z } from 'zod';
+import { enumSchema } from '../shared/utils/utils';
+import { UserRoles, UserStatus } from './user.enum';
 
 export const createUserSchema = z.object({
   name: z.string().min(1),
@@ -17,7 +17,6 @@ export const updateUserSchema = z.object({
   status: z.number().int().optional(),
   password: z.string().min(6).optional(),
 });
-
 
 export type CreateUserDTO = z.infer<typeof createUserSchema>;
 export type UpdateUserDTO = z.infer<typeof updateUserSchema>;

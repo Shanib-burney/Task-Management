@@ -1,6 +1,6 @@
-import { RequestHandler } from "express";
-import { ZodSchema, ZodError } from "zod";
-import { UnprocessableEntityException } from "../utils/exceptions";
+import { RequestHandler } from 'express';
+import { ZodSchema, ZodError } from 'zod';
+import { UnprocessableEntityException } from '../utils/exceptions';
 
 interface ValidateSchemas {
   body?: ZodSchema<any>;
@@ -8,7 +8,8 @@ interface ValidateSchemas {
   params?: ZodSchema<any>;
 }
 
-export const validate = (schemas: ValidateSchemas): RequestHandler =>
+export const validate =
+  (schemas: ValidateSchemas): RequestHandler =>
   async (req, res, next) => {
     const errors: Array<{ location: string; field: string; message: string }> = [];
 
@@ -19,10 +20,10 @@ export const validate = (schemas: ValidateSchemas): RequestHandler =>
         if (error instanceof ZodError) {
           errors.push(
             ...error.issues.map((err) => ({
-              location: "body",
-              field: err.path.join("."),
+              location: 'body',
+              field: err.path.join('.'),
               message: err.message,
-            }))
+            })),
           );
         } else {
           return next(error);
@@ -36,10 +37,10 @@ export const validate = (schemas: ValidateSchemas): RequestHandler =>
         if (error instanceof ZodError) {
           errors.push(
             ...error.issues.map((err) => ({
-              location: "query",
-              field: err.path.join("."),
+              location: 'query',
+              field: err.path.join('.'),
               message: err.message,
-            }))
+            })),
           );
         } else {
           return next(error);
@@ -54,10 +55,10 @@ export const validate = (schemas: ValidateSchemas): RequestHandler =>
         if (error instanceof ZodError) {
           errors.push(
             ...error.issues.map((err) => ({
-              location: "params",
-              field: err.path.join("."),
+              location: 'params',
+              field: err.path.join('.'),
               message: err.message,
-            }))
+            })),
           );
         } else {
           return next(error);
@@ -66,9 +67,7 @@ export const validate = (schemas: ValidateSchemas): RequestHandler =>
     }
 
     if (errors.length > 0) {
-      return next(
-        new UnprocessableEntityException("Validation Failed", errors)
-      );
+      return next(new UnprocessableEntityException('Validation Failed', errors));
     }
 
     next();

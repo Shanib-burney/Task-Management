@@ -12,8 +12,24 @@ describe('UserRepository', () => {
   describe('findMany', () => {
     it('should return paginated users without password hash', async () => {
       const mockUsers = [
-        { id: 1, name: 'John Doe', email: 'john@example.com', role: 1, status: 1, createdAt: new Date(), updatedAt: new Date() },
-        { id: 2, name: 'Jane Doe', email: 'jane@example.com', role: 1, status: 1, createdAt: new Date(), updatedAt: new Date() },
+        {
+          id: 1,
+          name: 'John Doe',
+          email: 'john@example.com',
+          role: 1,
+          status: 1,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: 2,
+          name: 'Jane Doe',
+          email: 'jane@example.com',
+          role: 1,
+          status: 1,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
       ];
 
       (prisma.user.findMany as jest.Mock).mockResolvedValue(mockUsers);
@@ -53,7 +69,15 @@ describe('UserRepository', () => {
 
   describe('findById', () => {
     it('should return user by id without password hash', async () => {
-      const mockUser = { id: 1, name: 'John Doe', email: 'john@example.com', role: 1, status: 1, createdAt: new Date(), updatedAt: new Date() };
+      const mockUser = {
+        id: 1,
+        name: 'John Doe',
+        email: 'john@example.com',
+        role: 1,
+        status: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
 
       (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
 
@@ -77,7 +101,16 @@ describe('UserRepository', () => {
 
   describe('findByEmail', () => {
     it('should return user by email', async () => {
-      const mockUser = { id: 1, name: 'John Doe', email: 'john@example.com', role: 1, status: 1, passwordHash: 'hashed', createdAt: new Date(), updatedAt: new Date() };
+      const mockUser = {
+        id: 1,
+        name: 'John Doe',
+        email: 'john@example.com',
+        role: 1,
+        status: 1,
+        passwordHash: 'hashed',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
 
       (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
 
@@ -90,7 +123,16 @@ describe('UserRepository', () => {
     });
 
     it('should exclude user with specific id when ignoreId is provided', async () => {
-      const mockUser = { id: 2, name: 'Jane Doe', email: 'jane@example.com', role: 1, status: 1, passwordHash: 'hashed', createdAt: new Date(), updatedAt: new Date() };
+      const mockUser = {
+        id: 2,
+        name: 'Jane Doe',
+        email: 'jane@example.com',
+        role: 1,
+        status: 1,
+        passwordHash: 'hashed',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
 
       (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
 
@@ -126,7 +168,16 @@ describe('UserRepository', () => {
   describe('update', () => {
     it('should update user by id', async () => {
       const updateData = { name: 'Updated Name' };
-      const mockUpdatedUser = { id: 1, name: 'Updated Name', email: 'john@example.com', role: 1, status: 1, passwordHash: 'hashed', createdAt: new Date(), updatedAt: new Date() };
+      const mockUpdatedUser = {
+        id: 1,
+        name: 'Updated Name',
+        email: 'john@example.com',
+        role: 1,
+        status: 1,
+        passwordHash: 'hashed',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
 
       (prisma.user.update as jest.Mock).mockResolvedValue(mockUpdatedUser);
 
@@ -142,7 +193,16 @@ describe('UserRepository', () => {
 
   describe('delete', () => {
     it('should delete user by id', async () => {
-      const mockDeletedUser = { id: 1, name: 'John Doe', email: 'john@example.com', role: 1, status: 1, passwordHash: 'hashed', createdAt: new Date(), updatedAt: new Date() };
+      const mockDeletedUser = {
+        id: 1,
+        name: 'John Doe',
+        email: 'john@example.com',
+        role: 1,
+        status: 1,
+        passwordHash: 'hashed',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
 
       (prisma.user.delete as jest.Mock).mockResolvedValue(mockDeletedUser);
 

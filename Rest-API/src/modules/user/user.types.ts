@@ -1,4 +1,4 @@
-import { User } from "@prisma-client";
+import { User } from '@prisma-client';
 
 // export type CreateUserDTO = Omit<User, "id" | "createdAt" | "updatedAt" | "passwordHash"> & {
 //   password: string;
@@ -6,9 +6,9 @@ import { User } from "@prisma-client";
 
 // export type UpdateUserDTO = Partial<CreateUserDTO>;
 
-export type UserWithoutPassword = Omit<User, "passwordHash">;
+export type UserWithoutPassword = Omit<User, 'passwordHash'>;
 
-export type UserResponseDTO = Omit<User, "passwordHash" | "role" | "status"> & {
+export type UserResponseDTO = Omit<User, 'passwordHash' | 'role' | 'status'> & {
   role: string;
   status: string;
 };
@@ -18,4 +18,3 @@ export interface PaginationOptions {
   size: number;
   paging: boolean;
 }
-
