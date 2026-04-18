@@ -3,40 +3,30 @@ FROM node:24-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files
+# Copy package files and install all dependencies for build
 COPY package*.json ./
-
-# Install all dependencies (including dev dependencies for building)
 RUN npm ci
 
-# Copy source code
+# Copy source code and build artifacts
 COPY . .
 
-# Generate Prisma client
+# Generate Prisma client and build the app
 RUN npm run generate
-
-# Build the application
 RUN npm run build
+
+# Remove development-only dependencies before copying to production
+RUN npm prune --production
 
 # Production stage
 FROM node:24-alpine AS production
 
 WORKDIR /app
+ENV NODE_ENV=production
 
-# Copy package files
+# Copy only the app, generated build, and production dependencies
 COPY package*.json ./
-
-# Install only production dependencies
-RUN npm ci --only=production
-
-# Copy built application from builder stage
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
 
-# Copy Prisma schema and migrations (needed for potential migrations)
-COPY --from=builder /app/prisma ./prisma
-
-# Expose port
 EXPOSE 3000
-
-# Start the application
 CMD ["node", "dist/index.js"]
