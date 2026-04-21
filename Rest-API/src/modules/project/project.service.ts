@@ -15,7 +15,7 @@ export class ProjectService {
   }
 
   async getAllProjects(page?: pagingDTO): Promise<PaginatedResponse<Project>> {
-    let options = getTakeSkip(page);
+    const options = getTakeSkip(page);
 
     return this.projectRepository.findMany(options);
   }

@@ -9,7 +9,7 @@ export class TeamService {
   }
 
   async getAllTeams(page?: pagingDTO): Promise<PaginatedResponse<Team>> {
-    let options = getTakeSkip(page);
+    const options = getTakeSkip(page);
 
     return this.teamRepository.findMany(options);
   }

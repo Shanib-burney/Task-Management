@@ -15,7 +15,7 @@ export class UserService {
   }
 
   async getAllUsers(page?: pagingDTO): Promise<PaginatedResponse<UserResponseDTO>> {
-    let options = getTakeSkip(page);
+    const options = getTakeSkip(page);
 
     const result = await this.userRepository.findMany(options);
 
