@@ -1,0 +1,81 @@
+import express from 'express';
+import type { Application, Request, Response } from 'express';
+import dotenv from 'dotenv';
+import 'module-alias/register';
+import { prisma } from './db/prisma-client';
+import { errorHandler } from './modules/shared/middlewares/errorHandler';
+import { requestLogger } from './modules/shared/middlewares/requestLogger';
+import { logger } from './modules/shared/utils/logger';
+import { setupRoutes } from './routes';
+
+dotenv.config();
+
+const app: Application = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(express.json());
+
+app.use(requestLogger);
+
+app.get('/', (req: Request, res: Response) => {
+  res.send('Welcome to Express & TypeScript Server');
+});
+
+setupRoutes(app);
+
+app.use(errorHandler);
+
+// Export app for testing
+export { app };
+
+// Database connection
+if (process.env.NODE_ENV !== 'test') {
+  (async () => {
+    try {
+      await prisma.$connect();
+      await prisma.$executeRaw`SELECT 1`; // Test query to confirm connection
+      logger.info(
+        `Database connected successfully at ${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
+      );
+    } catch (error) {
+      logger.error('Database connection failed:', error);
+      process.exit(1);
+    }
+  })();
+}
+
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled Rejection:', reason);
+  //  process.exit(1)
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+  //  process.exit(1)
+});
+
+// Only start server if not in test environment
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    logger.info(`Server is running on http://localhost:${PORT}`);
+  });
+}
+
+// app.get("/error", async (req: Request, res: Response) => {
+
+//   // 1. Synchronous crash
+//   // throw new Error("Crash! Synchronous");
+
+//   // // // 2. Asynchronous crash outside Express promise chain
+//   // setTimeout(() => {
+//   //   throw new Error("Crash! Async inside setTimeout");
+//   // }, 100);
+
+//   // 3. Unhandled promise rejection outside route chain
+//   Promise.reject(new Error("Crash! Unhandled rejection"));
+
+//   // const data = await Promise.reject(new Error("Something went wrong! error"));
+
+//   res.json({ok:"ok"})
+
+// });

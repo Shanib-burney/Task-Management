@@ -1,0 +1,35 @@
+services:
+  task-rest-api:
+    image: rest-api-app:${API_VERSION}
+    deploy:
+      mode: replicated`
+      replicas: 2
+    environment:
+      DB_HOST: postgre
+      DB_PORT: 5432
+      PORT: 3000
+      DB_USERNAME: xplorie
+      DB_PASSWORD: mypassword#123
+      DB_NAME: task-management-gql
+      DB_SCHEMA: public
+      NODE_ENV: development
+      PRISMA_HIDE_PARAMETERS: true
+    networks:
+      - environment_xnet
+
+  proxy:
+    image: nginx:1.26.2
+    container_name: proxy
+    restart: on-failure
+    networks:
+      - environment_xnet
+    ports:
+      - "4019:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - task-rest-api
+
+networks:
+  environment_xnet:
+    external: true
