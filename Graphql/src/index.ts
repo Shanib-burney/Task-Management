@@ -1,81 +1,101 @@
-import express from 'express';
-import type { Application, Request, Response } from 'express';
-import dotenv from 'dotenv';
-import 'module-alias/register';
-import { prisma } from './db/prisma-client';
-import { errorHandler } from './modules/shared/middlewares/errorHandler';
-import { requestLogger } from './modules/shared/middlewares/requestLogger';
-import { logger } from './modules/shared/utils/logger';
-import { setupRoutes } from './routes';
+import express from "express";
+import type { Application, Request, RequestHandler, Response } from "express";
+import dotenv from "dotenv";
+import "module-alias/register";
+import cors from "cors";
+import { expressMiddleware } from '@as-integrations/express5';
+import { ApolloServer } from "@apollo/server";
+
+import { prisma } from "./db/prisma-client";
+import { logger } from "./shared/utils/logger";
+
+import { typeDefs } from "./graphql/typeDefs";
+import { resolvers } from "./graphql/resolvers";
+
+// import { setupRoutes } from './routes';
+// import { errorHandler } from './modules/shared/middlewares/errorHandler';
+// import { requestLogger } from './modules/shared/middlewares/requestLogger';
 
 dotenv.config();
 
 const app: Application = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(cors());
 app.use(express.json());
 
-app.use(requestLogger);
-
-app.get('/', (req: Request, res: Response) => {
-  res.send('Welcome to Express & TypeScript Server');
+app.get("/", (req: Request, res: Response) => {
+  res.send("Welcome to Express + Apollo GraphQL Server");
 });
 
-setupRoutes(app);
+  
+// setupRoutes(app);
 
-app.use(errorHandler);
+// 🔥 Apollo Setup
+async function startApolloServer() {
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+  });
+
+  await server.start();
+
+  app.use(
+  "/graphql",
+  cors(),
+  express.json(),
+
+  
+  expressMiddleware(server, {
+    context: async ({ req }: any) => {
+      return {
+        prisma,
+        token: req.headers.authorization || "",
+        logger,
+      };
+    },
+  }) as unknown as RequestHandler 
+);
+
+}
+
 
 // Export app for testing
 export { app };
 
-// Database connection
-if (process.env.NODE_ENV !== 'test') {
+// Database connection + Server start
+if (process.env.NODE_ENV !== "test") {
   (async () => {
     try {
       await prisma.$connect();
-      await prisma.$executeRaw`SELECT 1`; // Test query to confirm connection
+      await prisma.$executeRaw`SELECT 1`;
+
       logger.info(
         `Database connected successfully at ${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
       );
+
+      // 👉 Start Apollo AFTER DB is ready
+      await startApolloServer();
+
+      app.listen(PORT, () => {
+        logger.info(`🚀 REST: http://localhost:${PORT}`);
+        logger.info(`🚀 GraphQL: http://localhost:${PORT}/graphql`);
+      });
     } catch (error) {
-      logger.error('Database connection failed:', error);
+      logger.error("Startup failed:", error);
       process.exit(1);
     }
   })();
 }
 
-process.on('unhandledRejection', (reason) => {
-  console.error('Unhandled Rejection:', reason);
-  //  process.exit(1)
+// Global handlers
+process.on("unhandledRejection", (reason) => {
+  logger.error("Unhandled Rejection:", reason);
 });
 
-process.on('uncaughtException', (err) => {
-  console.error('Uncaught Exception:', err);
-  //  process.exit(1)
+process.on("uncaughtException", (err) => {
+  logger.error("Uncaught Exception:", err);
 });
 
-// Only start server if not in test environment
-if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, () => {
-    logger.info(`Server is running on http://localhost:${PORT}`);
-  });
-}
-
-// app.get("/error", async (req: Request, res: Response) => {
-
-//   // 1. Synchronous crash
-//   // throw new Error("Crash! Synchronous");
-
-//   // // // 2. Asynchronous crash outside Express promise chain
-//   // setTimeout(() => {
-//   //   throw new Error("Crash! Async inside setTimeout");
-//   // }, 100);
-
-//   // 3. Unhandled promise rejection outside route chain
-//   Promise.reject(new Error("Crash! Unhandled rejection"));
-
-//   // const data = await Promise.reject(new Error("Something went wrong! error"));
-
-//   res.json({ok:"ok"})
-
-// });
+// Error middleware LAST
+// app.use(errorHandler);
