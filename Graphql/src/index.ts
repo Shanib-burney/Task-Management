@@ -96,6 +96,3 @@ process.on("unhandledRejection", (reason) => {
 process.on("uncaughtException", (err) => {
   logger.error("Uncaught Exception:", err);
 });
-
-// Error middleware LAST
-// app.use(errorHandler);

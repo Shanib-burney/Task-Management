@@ -17,8 +17,8 @@ import type * as Prisma from "./prismaNamespace"
 
 const config: runtime.GetPrismaClientConfig = {
   "previewFeatures": [],
-  "clientVersion": "7.4.2",
-  "engineVersion": "94a226be1cf2967af2541cca5529f0f7ba866919",
+  "clientVersion": "7.8.0",
+  "engineVersion": "3c6e192761c0362d496ed980de936e2f3cebcd3a",
   "activeProvider": "postgresql",
   "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel User {\n  id            Int        @id @default(autoincrement())\n  name          String\n  email         String     @unique\n  role          Int        @db.SmallInt\n  status        Int        @db.SmallInt\n  passwordHash  String\n  createdAt     DateTime   @default(now())\n  updatedAt     DateTime   @updatedAt\n  ownedProjects Project[]  @relation(\"ProjectOwner\")\n  assignedTasks Task[]     @relation(\"TaskAssignee\")\n  teams         UserTeam[]\n  comments      Comment[]\n\n  @@map(\"users\")\n}\n\nmodel Team {\n  id        Int        @id @default(autoincrement())\n  name      String\n  createdAt DateTime   @default(now())\n  updatedAt DateTime   @updatedAt\n  projects  Project[]\n  members   UserTeam[]\n\n  @@map(\"teams\")\n}\n\nmodel UserTeam {\n  id        Int      @id @default(autoincrement())\n  userId    Int\n  teamId    Int\n  role      Int      @default(0) @db.SmallInt\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([userId, teamId])\n  @@map(\"user_teams\")\n}\n\nmodel Project {\n  id        Int      @id @default(autoincrement())\n  name      String\n  status    Int      @default(0) @db.SmallInt\n  teamId    Int\n  ownerId   Int\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  owner     User     @relation(\"ProjectOwner\", fields: [ownerId], references: [id])\n  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)\n  tasks     Task[]\n\n  @@map(\"projects\")\n}\n\nmodel Task {\n  id          Int       @id @default(autoincrement())\n  title       String\n  description String?\n  status      Int       @default(0) @db.SmallInt\n  projectId   Int\n  assigneeId  Int?\n  createdAt   DateTime  @default(now())\n  updatedAt   DateTime  @updatedAt\n  assignee    User?     @relation(\"TaskAssignee\", fields: [assigneeId], references: [id])\n  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)\n  comments    Comment[]\n\n  @@map(\"tasks\")\n}\n\nmodel Comment {\n  id        Int      @id @default(autoincrement())\n  content   String\n  taskId    Int\n  authorId  Int\n  createdAt DateTime @default(now())\n\n  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)\n  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)\n\n  @@map(\"comments\")\n}\n",
   "runtimeDataModel": {
@@ -180,7 +180,7 @@ export interface PrismaClient<
    * 
    * Read more in our [docs](https://www.prisma.io/docs/orm/prisma-client/queries/transactions).
    */
-  $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): runtime.Types.Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
+  $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): runtime.Types.Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
 
   $transaction<R>(fn: (prisma: Omit<PrismaClient, runtime.ITXClientDenyList>) => runtime.Types.Utils.JsPromise<R>, options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): runtime.Types.Utils.JsPromise<R>
 

@@ -4,8 +4,16 @@ export const typeDefs = `#graphql
     name: String!
     email: String!
   }
+  input CreateUserInput {
+  name: String!
+  email: String!
+  passwordHash: String!
+}
 
   type Query {
     users: [User!]!
+  }
+  type Mutation {
+    createUser(input: CreateUserInput!): User!
   }
 `;
