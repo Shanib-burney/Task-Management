@@ -1,0 +1,1 @@
+export { teamResolvers } from './resolvers';

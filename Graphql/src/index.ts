@@ -9,8 +9,8 @@ import { ApolloServer } from "@apollo/server";
 import { prisma } from "./db/prisma-client";
 import { logger } from "./shared/utils/logger";
 
-import { typeDefs } from "./graphql/typeDefs";
-import { resolvers } from "./graphql/resolvers";
+import { typeDefs, resolvers } from "./schema";
+import { createLoaders } from "./context";
 
 // import { setupRoutes } from './routes';
 // import { errorHandler } from './modules/shared/middlewares/errorHandler';
@@ -28,7 +28,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to Express + Apollo GraphQL Server");
 });
 
-  
+
 // setupRoutes(app);
 
 // 🔥 Apollo Setup
@@ -41,21 +41,20 @@ async function startApolloServer() {
   await server.start();
 
   app.use(
-  "/graphql",
-  cors(),
-  express.json(),
-
-  
-  expressMiddleware(server, {
-    context: async ({ req }: any) => {
-      return {
-        prisma,
-        token: req.headers.authorization || "",
-        logger,
-      };
-    },
-  }) as unknown as RequestHandler 
-);
+    "/graphql",
+    cors(),
+    express.json(),
+    expressMiddleware(server, {
+      context: async ({ req }: any) => {
+        return {
+          prisma,
+          loaders: createLoaders(prisma),
+          token: req.headers.authorization || "",
+          logger,
+        };
+      },
+    }) as unknown as RequestHandler
+  );
 
 }
 

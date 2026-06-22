@@ -1,0 +1,12 @@
+type Team {
+  id: ID!
+  name: String!
+}
+
+input CreateTeamInput {
+  name: String!
+}
+
+type Mutation {
+  createTeam(input: CreateTeamInput!): Team!
+}

@@ -1,0 +1,16 @@
+type Project {
+  id: ID!
+  name: String!
+  status: Int!
+  tasks: [Task!]!
+}
+
+input CreateProjectInput {
+  name: String!
+  teamId: Int!
+  ownerId: Int!
+}
+
+type Mutation {
+  createProject(input: CreateProjectInput!): Project!
+}
