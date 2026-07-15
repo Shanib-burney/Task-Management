@@ -1,9 +1,12 @@
+import { UserRole } from '../modules/user/user.enum';
 import { GraphQLResolveInfo } from 'graphql';
 import { UserMapper, ProjectMapper, TaskMapper, TeamMapper } from '../mappers';
 import { GraphQLContext } from '../context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
+export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -11,6 +14,12 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+};
+
+export type AuthPayload = {
+  __typename?: 'AuthPayload';
+  token: Scalars['String']['output'];
+  user: User;
 };
 
 export type CreateProjectInput = {
@@ -36,12 +45,18 @@ export type CreateUserInput = {
   password: Scalars['String']['input'];
 };
 
+export type LoginInput = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createProject: Project;
   createTask: Task;
   createTeam: Team;
   createUser: User;
+  login: AuthPayload;
 };
 
 
@@ -62,6 +77,11 @@ export type MutationCreateTeamArgs = {
 
 export type MutationCreateUserArgs = {
   input: CreateUserInput;
+};
+
+
+export type MutationLoginArgs = {
+  input: LoginInput;
 };
 
 export type Project = {
@@ -97,7 +117,10 @@ export type User = {
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   ownedProjects: Array<Project>;
+  role: UserRole;
 };
+
+export { UserRole };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
 export type ResolversObject<TObject> = WithIndex<TObject>;
@@ -173,6 +196,7 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
+  AuthPayload: ResolverTypeWrapper<Omit<AuthPayload, 'user'> & { user: ResolversTypes['User'] }>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   CreateProjectInput: CreateProjectInput;
   CreateTaskInput: CreateTaskInput;
@@ -180,6 +204,7 @@ export type ResolversTypes = ResolversObject<{
   CreateUserInput: CreateUserInput;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  LoginInput: LoginInput;
   Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
   Project: ResolverTypeWrapper<ProjectMapper>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
@@ -187,10 +212,12 @@ export type ResolversTypes = ResolversObject<{
   Task: ResolverTypeWrapper<TaskMapper>;
   Team: ResolverTypeWrapper<TeamMapper>;
   User: ResolverTypeWrapper<UserMapper>;
+  UserRole: UserRole;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
+  AuthPayload: Omit<AuthPayload, 'user'> & { user: ResolversParentTypes['User'] };
   Boolean: Scalars['Boolean']['output'];
   CreateProjectInput: CreateProjectInput;
   CreateTaskInput: CreateTaskInput;
@@ -198,6 +225,7 @@ export type ResolversParentTypes = ResolversObject<{
   CreateUserInput: CreateUserInput;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
+  LoginInput: LoginInput;
   Mutation: Record<PropertyKey, never>;
   Project: ProjectMapper;
   Query: Record<PropertyKey, never>;
@@ -207,11 +235,17 @@ export type ResolversParentTypes = ResolversObject<{
   User: UserMapper;
 }>;
 
+export type AuthPayloadResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['AuthPayload'] = ResolversParentTypes['AuthPayload']> = ResolversObject<{
+  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+}>;
+
 export type MutationResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   createProject?: Resolver<ResolversTypes['Project'], ParentType, ContextType, RequireFields<MutationCreateProjectArgs, 'input'>>;
   createTask?: Resolver<ResolversTypes['Task'], ParentType, ContextType, RequireFields<MutationCreateTaskArgs, 'input'>>;
   createTeam?: Resolver<ResolversTypes['Team'], ParentType, ContextType, RequireFields<MutationCreateTeamArgs, 'input'>>;
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>;
+  login?: Resolver<ResolversTypes['AuthPayload'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
 }>;
 
 export type ProjectResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Project'] = ResolversParentTypes['Project']> = ResolversObject<{
@@ -242,14 +276,19 @@ export type UserResolvers<ContextType = GraphQLContext, ParentType extends Resol
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   ownedProjects?: Resolver<Array<ResolversTypes['Project']>, ParentType, ContextType>;
+  role?: Resolver<ResolversTypes['UserRole'], ParentType, ContextType>;
 }>;
 
+export type UserRoleResolvers = EnumResolverSignature<{ ADMIN?: any, USER?: any }, ResolversTypes['UserRole']>;
+
 export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
+  AuthPayload?: AuthPayloadResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Project?: ProjectResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Task?: TaskResolvers<ContextType>;
   Team?: TeamResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
+  UserRole?: UserRoleResolvers;
 }>;
 

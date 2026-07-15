@@ -14,6 +14,9 @@ const config: CodegenConfig = {
           Task: '../mappers#TaskMapper',
           Team: '../mappers#TeamMapper',
         },
+        enumValues: {
+          UserRole: '../modules/user/user.enum#UserRole',  // ← add this
+        },
       },
     },
   },

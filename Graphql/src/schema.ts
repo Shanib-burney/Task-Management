@@ -12,7 +12,7 @@ const loadGql = (file: string) =>
 export const typeDefs = [
   loadGql('user/user.graphql'),
   loadGql('project/project.graphql'),
-  loadGql('task/task.graphql'),
+  loadGql('task/task.graphql'), 
   loadGql('team/team.graphql'),
 ];
 

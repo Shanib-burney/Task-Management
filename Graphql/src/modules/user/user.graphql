@@ -2,11 +2,26 @@ type User {
   id: ID!
   name: String!
   email: String!
+  role: UserRole! 
   ownedProjects: [Project!]!
+}
+enum UserRole {
+  ADMIN
+  USER
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
 }
 
 input CreateUserInput {
   name: String!
+  email: String!
+  password: String!
+}
+
+input LoginInput {
   email: String!
   password: String!
 }
@@ -17,4 +32,5 @@ type Query {
 
 type Mutation {
   createUser(input: CreateUserInput!): User!
+  login(input: LoginInput!): AuthPayload!
 }
