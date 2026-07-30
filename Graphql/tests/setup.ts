@@ -3,6 +3,9 @@ import { jest } from '@jest/globals';
 // Mock Prisma client
 jest.mock('../src/db/prisma-client', () => ({
   prisma: {
+    $connect: jest.fn<() => Promise<void>>().mockResolvedValue(undefined),
+    $disconnect: jest.fn<() => Promise<void>>().mockResolvedValue(undefined),
+    $executeRaw: jest.fn<() => Promise<void>>().mockResolvedValue(undefined),
     $transaction: jest.fn(),
     user: {
       findMany: jest.fn(),
@@ -53,7 +56,7 @@ jest.mock('bcryptjs', () => ({
 }));
 
 // Mock winston logger
-jest.mock('../src/modules/shared/utils/logger', () => ({
+jest.mock('../src/shared/utils/logger', () => ({
   logger: {
     info: jest.fn(),
     error: jest.fn(),

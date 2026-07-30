@@ -8,5 +8,5 @@ input CreateTeamInput {
 }
 
 type Mutation {
-  createTeam(input: CreateTeamInput!): Team!
+  createTeam(input: CreateTeamInput!): Team! @auth(requires: [ADMIN])
 }

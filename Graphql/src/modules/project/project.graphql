@@ -12,5 +12,5 @@ input CreateProjectInput {
 }
 
 type Mutation {
-  createProject(input: CreateProjectInput!): Project!
+  createProject(input: CreateProjectInput!): Project! @auth
 }

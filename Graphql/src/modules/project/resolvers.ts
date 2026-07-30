@@ -1,7 +1,10 @@
 import type { MutationResolvers, ProjectResolvers } from '../../generated/graphql';
+import { compose } from '../../shared/utils/compose';
+import { withValidation } from '../../shared/middlewares/withValidation';
+import { createProjectSchema } from './project.validation';
 
 const Mutation: MutationResolvers = {
-  createProject: (_, { input }, { prisma }) =>
+  createProject: compose(withValidation(createProjectSchema))((_, { input }, { prisma }) =>
     prisma.project.create({
       data: {
         name: input.name,
@@ -10,6 +13,7 @@ const Mutation: MutationResolvers = {
         status: 0,
       },
     }),
+  ),
 };
 
 const Project: ProjectResolvers = {

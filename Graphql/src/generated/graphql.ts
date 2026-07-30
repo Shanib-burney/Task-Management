@@ -235,6 +235,12 @@ export type ResolversParentTypes = ResolversObject<{
   User: UserMapper;
 }>;
 
+export type AuthDirectiveArgs = {
+  requires?: Maybe<Array<UserRole>>;
+};
+
+export type AuthDirectiveResolver<Result, Parent, ContextType = GraphQLContext, Args = AuthDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
 export type AuthPayloadResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['AuthPayload'] = ResolversParentTypes['AuthPayload']> = ResolversObject<{
   token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
@@ -292,3 +298,6 @@ export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
   UserRole?: UserRoleResolvers;
 }>;
 
+export type DirectiveResolvers<ContextType = GraphQLContext> = ResolversObject<{
+  auth?: AuthDirectiveResolver<any, any, ContextType>;
+}>;

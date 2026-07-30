@@ -1,7 +1,10 @@
 import type { MutationResolvers } from '../../generated/graphql';
+import { compose } from '../../shared/utils/compose';
+import { withValidation } from '../../shared/middlewares/withValidation';
+import { createTaskSchema } from './task.validation';
 
 const Mutation: MutationResolvers = {
-  createTask: (_, { input }, { prisma }) =>
+  createTask: compose(withValidation(createTaskSchema))((_, { input }, { prisma }) =>
     prisma.task.create({
       data: {
         title: input.title,
@@ -11,6 +14,7 @@ const Mutation: MutationResolvers = {
         status: 0,
       },
     }),
+  ),
 };
 
 export const taskResolvers = { Mutation };

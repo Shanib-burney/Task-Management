@@ -27,7 +27,7 @@ input LoginInput {
 }
 
 type Query {
-  users: [User!]!
+  users: [User!]! @auth(requires: [ADMIN])
 }
 
 type Mutation {

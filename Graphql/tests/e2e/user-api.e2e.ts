@@ -1,5 +1,6 @@
 import request from 'supertest';
 import { app } from '../../src/index';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from '@jest/globals';
 import { prisma } from '../../src/db/prisma-client';
 
 describe('User API End-to-End Tests', () => {

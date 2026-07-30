@@ -3,14 +3,30 @@ import type { Application, Request, RequestHandler, Response } from "express";
 import dotenv from "dotenv";
 import "module-alias/register";
 import cors from "cors";
+import jwt from "jsonwebtoken";
 import { expressMiddleware } from '@as-integrations/express5';
 import { ApolloServer } from "@apollo/server";
 
 import { prisma } from "./db/prisma-client";
 import { logger } from "./shared/utils/logger";
 
-import { typeDefs, resolvers } from "./schema";
-import { createLoaders } from "./context";
+import { schema } from "./schema";
+import { createLoaders, type AuthUser } from "./context";
+import { JWT_SECRET } from "./shared/utils/constants";
+import { UserRole } from "./modules/user/user.enum";
+
+function getUserFromAuthHeader(authHeader: string | undefined): AuthUser | null {
+  if (!authHeader?.startsWith("Bearer ")) return null;
+  try {
+    const payload = jwt.verify(authHeader.slice("Bearer ".length), JWT_SECRET) as {
+      userId: number;
+      role: keyof typeof UserRole;
+    };
+    return { id: payload.userId, role: UserRole[payload.role] };
+  } catch {
+    return null;
+  }
+}
 
 // import { setupRoutes } from './routes';
 // import { errorHandler } from './modules/shared/middlewares/errorHandler';
@@ -34,8 +50,7 @@ app.get("/", (req: Request, res: Response) => {
 // 🔥 Apollo Setup
 async function startApolloServer() {
   const server = new ApolloServer({
-    typeDefs,
-    resolvers,
+    schema,
   });
 
   await server.start();
@@ -49,7 +64,7 @@ async function startApolloServer() {
         return {
           prisma,
           loaders: createLoaders(prisma),
-          token: req.headers.authorization || "",
+          user: getUserFromAuthHeader(req.headers.authorization),
           logger,
         };
       },

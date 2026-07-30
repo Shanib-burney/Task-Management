@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma-client';
 import { createUserLoaders } from './modules/user/dataloader';
 import { createProjectLoaders } from './modules/project/dataloader';
+import { UserRole } from './modules/user/user.enum';
 
 export function createLoaders(prisma: PrismaClient) {
   return {
@@ -11,8 +12,13 @@ export function createLoaders(prisma: PrismaClient) {
 
 export type Loaders = ReturnType<typeof createLoaders>;
 
+export type AuthUser = {
+  id: number;
+  role: UserRole;
+};
+
 export type GraphQLContext = {
   prisma: PrismaClient;
   loaders: Loaders;
-  token: string;
+  user: AuthUser | null;
 };

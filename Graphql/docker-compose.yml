@@ -1,6 +1,6 @@
 services:
-  task-rest-api:
-    image: rest-api-app:${API_VERSION}
+  task-graphql-api:
+    image: task-graphql-api:${API_VERSION}
     deploy:
       mode: replicated`
       replicas: 2
@@ -10,9 +10,9 @@ services:
       PORT: 3000
       DB_USERNAME: xplorie
       DB_PASSWORD: mypassword#123
-      DB_NAME: task-management-gql
+      DB_NAME: task-management-apollo
       DB_SCHEMA: public
-      NODE_ENV: development
+      NODE_ENV: production
       PRISMA_HIDE_PARAMETERS: true
     networks:
       - environment_xnet
@@ -28,7 +28,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - task-rest-api
+      - task-graphql-api
 
 networks:
   environment_xnet:
