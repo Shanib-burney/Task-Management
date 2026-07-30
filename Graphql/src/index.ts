@@ -6,6 +6,7 @@ import cors from "cors";
 import jwt from "jsonwebtoken";
 import { expressMiddleware } from '@as-integrations/express5';
 import { ApolloServer } from "@apollo/server";
+import { ApolloServerPluginLandingPageLocalDefault, ApolloServerPluginLandingPageProductionDefault } from "@apollo/server/plugin/landingPage/default";
 
 import { prisma } from "./db/prisma-client";
 import { logger } from "./shared/utils/logger";
@@ -32,7 +33,7 @@ function getUserFromAuthHeader(authHeader: string | undefined): AuthUser | null 
 // import { errorHandler } from './modules/shared/middlewares/errorHandler';
 // import { requestLogger } from './modules/shared/middlewares/requestLogger';
 
-dotenv.config();
+dotenv.config({ override: true });
 
 const app: Application = express();
 const PORT = process.env.PORT || 3000;
@@ -44,13 +45,19 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to Express + Apollo GraphQL Server");
 });
 
-
 // setupRoutes(app);
 
 // 🔥 Apollo Setup
 async function startApolloServer() {
+  const isLocalEnv = process.env.NODE_ENV?.trim().toLowerCase() === "local";
+  console.log("is Local", isLocalEnv, process.env.NODE_ENV)
+
   const server = new ApolloServer({
     schema,
+    introspection: isLocalEnv,
+    plugins: isLocalEnv
+      ? [ApolloServerPluginLandingPageLocalDefault()]
+      : [ApolloServerPluginLandingPageProductionDefault()],
   });
 
   await server.start();
