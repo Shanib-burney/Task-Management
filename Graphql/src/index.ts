@@ -1,7 +1,7 @@
 import express from "express";
 import type { Application, Request, RequestHandler, Response } from "express";
 import dotenv from "dotenv";
-import "module-alias/register";
+import "./register-aliases";
 import cors from "cors";
 import jwt from "jsonwebtoken";
 import { expressMiddleware } from '@as-integrations/express5';

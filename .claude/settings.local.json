@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__notion__notion-update-page",
+      "mcp__notion__notion-query-data-sources",
+      "mcp__notion__notion-create-comment",
+      "mcp__notion__notion-create-pages"
+    ]
+  }
+}
