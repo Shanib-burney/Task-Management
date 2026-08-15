@@ -14,4 +14,6 @@ input CreateTaskInput {
 
 type Mutation {
   createTask(input: CreateTaskInput!): Task! @auth
+  deleteTask(id: ID!): Task! @auth
+
 }
