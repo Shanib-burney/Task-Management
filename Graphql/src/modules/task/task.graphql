@@ -12,8 +12,15 @@ input CreateTaskInput {
   assigneeId: Int
 }
 
+input UpdateTaskInput {
+  id: ID!
+  title: String
+  description: String
+}
+
 type Mutation {
   createTask(input: CreateTaskInput!): Task! @auth
+  updateTask(input: UpdateTaskInput!): Task! @auth
   deleteTask(id: ID!): Task! @auth
 
 }

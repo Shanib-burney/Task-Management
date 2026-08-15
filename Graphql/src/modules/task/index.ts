@@ -1,1 +1,1 @@
-export { taskResolvers } from './resolvers';
+export { taskResolvers } from "./resolvers";

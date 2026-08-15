@@ -4,9 +4,12 @@ import dotenv from "dotenv";
 import "./register-aliases";
 import cors from "cors";
 import jwt from "jsonwebtoken";
-import { expressMiddleware } from '@as-integrations/express5';
+import { expressMiddleware } from "@as-integrations/express5";
 import { ApolloServer } from "@apollo/server";
-import { ApolloServerPluginLandingPageLocalDefault, ApolloServerPluginLandingPageProductionDefault } from "@apollo/server/plugin/landingPage/default";
+import {
+  ApolloServerPluginLandingPageLocalDefault,
+  ApolloServerPluginLandingPageProductionDefault,
+} from "@apollo/server/plugin/landingPage/default";
 
 import { prisma } from "./db/prisma-client";
 import { logger } from "./shared/utils/logger";
@@ -16,10 +19,15 @@ import { createLoaders, type AuthUser } from "./context";
 import { JWT_SECRET } from "./shared/utils/constants";
 import { UserRole } from "./modules/user/user.enum";
 
-function getUserFromAuthHeader(authHeader: string | undefined): AuthUser | null {
+function getUserFromAuthHeader(
+  authHeader: string | undefined,
+): AuthUser | null {
   if (!authHeader?.startsWith("Bearer ")) return null;
   try {
-    const payload = jwt.verify(authHeader.slice("Bearer ".length), JWT_SECRET) as {
+    const payload = jwt.verify(
+      authHeader.slice("Bearer ".length),
+      JWT_SECRET,
+    ) as {
       userId: number;
       role: keyof typeof UserRole;
     };
@@ -50,7 +58,7 @@ app.get("/", (req: Request, res: Response) => {
 // 🔥 Apollo Setup
 async function startApolloServer() {
   const isLocalEnv = process.env.NODE_ENV?.trim().toLowerCase() === "local";
-  console.log("is Local", isLocalEnv, process.env.NODE_ENV)
+  console.log("is Local", isLocalEnv, process.env.NODE_ENV);
 
   const server = new ApolloServer({
     schema,
@@ -75,11 +83,9 @@ async function startApolloServer() {
           logger,
         };
       },
-    }) as unknown as RequestHandler
+    }) as unknown as RequestHandler,
   );
-
 }
-
 
 // Export app for testing
 export { app };

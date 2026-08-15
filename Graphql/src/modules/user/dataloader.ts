@@ -1,5 +1,5 @@
-import DataLoader from 'dataloader';
-import { PrismaClient } from '@prisma-client';
+import DataLoader from "dataloader";
+import { PrismaClient } from "@prisma-client";
 
 export function createUserLoaders(prisma: PrismaClient) {
   return {

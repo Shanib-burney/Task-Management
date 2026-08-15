@@ -1,7 +1,7 @@
-import { PrismaClient } from '@prisma-client';
-import { createUserLoaders } from './modules/user/dataloader';
-import { createProjectLoaders } from './modules/project/dataloader';
-import { UserRole } from './modules/user/user.enum';
+import { PrismaClient } from "@prisma-client";
+import { createUserLoaders } from "./modules/user/dataloader";
+import { createProjectLoaders } from "./modules/project/dataloader";
+import { UserRole } from "./modules/user/user.enum";
 
 export function createLoaders(prisma: PrismaClient) {
   return {

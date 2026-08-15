@@ -1,4 +1,4 @@
-import type { GraphQLResolveInfo } from 'graphql';
+import type { GraphQLResolveInfo } from "graphql";
 
 export type InputResolverFn<TResult, TInput, TContext> = (
   parent: unknown,

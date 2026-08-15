@@ -1,11 +1,19 @@
-import 'dotenv/config';
-import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from '@prisma-client';
-const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_NAME, DB_SCHEMA } = process.env;
+import "dotenv/config";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "@prisma-client";
+const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_NAME, DB_SCHEMA } =
+  process.env;
 
-if (!DB_HOST || !DB_PORT || !DB_USERNAME || !DB_PASSWORD || !DB_NAME || !DB_SCHEMA) {
+if (
+  !DB_HOST ||
+  !DB_PORT ||
+  !DB_USERNAME ||
+  !DB_PASSWORD ||
+  !DB_NAME ||
+  !DB_SCHEMA
+) {
   throw new Error(
-    'One or more required DB environment variables are missing: DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_NAME, DB_SCHEMA',
+    "One or more required DB environment variables are missing: DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_NAME, DB_SCHEMA",
   );
 }
 
@@ -24,10 +32,10 @@ export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
     adapter,
-    errorFormat: 'minimal',
-    log: ['query', 'info', 'warn', 'error'],
+    errorFormat: "minimal",
+    log: ["query", "info", "warn", "error"],
   });
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
 }
